@@ -1,0 +1,121 @@
+[id="1"] {
+    width: 100px;
+    height: 100px;
+    background-color: black;
+    margin: 10px;
+}
+
+#yellow {
+    width: 100px;
+    height: 100px;
+    background-color: yellow;
+    margin: 10px;
+}
+
+#red {
+    width: 50px;
+    height: 50px;
+    background-color: red;
+    margin: 10px;
+    visibility: hidden;
+}
+
+#green {
+    width: 50px;
+    height: 20px;
+    background-color: green;
+    margin: 10px;
+    visibility: hidden;
+}
+
+#btn-red:hover {
+    color: red;
+}
+
+.blackSquare {
+    width: 100px;
+    height: 100px;
+    background-color: black;
+    margin: 10px;
+    display: inline-block;
+}
+
+.hidden {    
+    visibility: hidden;
+}
+
+.visibility {    
+    visibility: visible;
+}
+
+.note {
+    color: grey;
+}
+
+#coordinates {
+    position:fixed;
+    display: inline-block;
+    width: 110px;
+    height: 20px;
+    right:0%;
+    top: 0%;
+}
+
+.nativeinput {
+    width:200px;
+    height: 60px;
+    margin: 2px;
+}
+
+#arrowFourteenth {
+    height: 50px;
+    width: 50px;
+    color: green;
+    position: fixed;
+    right: 10px;
+    bottom: 20px;
+    cursor: pointer;
+    content: url("images/btn.png");
+  }
+
+#arrowFourteenth:hover {
+    content: url("images/btn2.png");
+}
+
+#fifteenth {
+    width: 300px;
+    height: 100px;
+    background-color: aquamarine;
+    margin: 4px;
+}
+
+#infifteenth {
+    width: 150px;
+    height: 50px;
+    background-color:blueviolet;
+    position: relative;
+    left: 75px;
+    top: 25px;
+}
+
+#greySquare {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background-color: grey;
+    opacity: 50%;
+    visibility: hidden;
+}
+
+#seventeenth {
+    padding-top: 3px;
+}
+
+#droptarget {
+    margin: 0 40% 0 0%;
+    height: 22px;
+    background-color: white;
+    transition: background-color 2s;
+}

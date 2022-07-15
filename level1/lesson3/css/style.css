@@ -1,0 +1,63 @@
+.main {
+    width: 700px;
+    height: 400px;
+    font-family: 'Edu QLD Beginner', cursive;
+    margin: auto;
+    padding-left: 20px;
+}
+
+.right {
+    float: left;
+    width: 30%;
+    height: 100%;
+}
+.left {
+    float: left;
+    width: 70%;
+}
+
+a:link {
+    color: black;
+    text-decoration: none;
+}
+a:hover {
+    color: green;
+    text-decoration: underline;
+}
+a:active {
+    color: red;
+    text-decoration: underline;
+}
+
+.start_game {
+    margin: auto; 
+    width: 150px;
+    float: right;
+}
+
+span.game {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    border: 2px solid black;
+    text-align: center;
+    border-radius: 30%;
+    margin: 1px;
+    background-color: black;
+    color: white;
+    user-select: none;
+}
+
+.zero {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    border: 2px solid black;
+    text-align: center;
+    border-radius: 30%;
+    margin: 1px;
+    font-weight: bold;
+    user-select: none;
+}

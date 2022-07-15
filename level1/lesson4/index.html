@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+
+    <script src="script.js" defer></script>
+    <title>Document</title>
+</head>
+<body>
+    <!-- task 1-2 -->
+    <div id="first">
+        <button onclick="document.getElementById('1').style = 'display:none;'">CSS (display: none)</button> <br>
+        <button onclick="squareRemove()">JS (удаление элемента)</button> <br>
+        <button onclick="squareHidden()">CSS+JS (класс hidden)</button> <br>
+        <!-- task 10 in js -->
+        <div id="coordinates"></div>
+    </div> 
+    <!-- task 3 -->
+    <div id="second">
+        <button onclick="squaresHidden()">Прячем/достаем квадраты</button> <br>
+    </div>
+    <!-- task 4 -->
+    <form name="my" onsubmit="return false">
+        Enter selector:
+        <input type="text" name="selector" value="">
+        <input type="button" onclick="searchSelector()" value="Не нажимай!"> <br>
+        <span class="note">Note: div, #second, button, form, [id="5"] </span>       
+    </form>
+    <!-- task 5 -->
+    <div id="third" onclick="hello1()">
+    </div>
+    <!-- task 6 -->
+    <div id="fourth">
+        <button id="btn-red">Наведи на меня</button>
+    </div>
+    <!-- task 7 -->
+    <div id="seventh">
+        <input type="text" value="">
+    </div>
+    <!-- task 8 -->
+    <div id="eighth">
+        <input type="text" size="50" value="https://interactive-examples.mdn.mozilla.net/media/cc0-images/grapefruit-slice-332-332.jpg"><br>
+        <button onclick="getImage()">Добавь адрес картинки</button> <br> <br>
+    </div>
+    <!-- task 9 -->
+    <div id="ninth">
+        <textarea 
+        rows="4" cols="100">https://interactive-examples.mdn.mozilla.net/media/cc0-images/grapefruit-slice-332-332.jpg
+https://interactive-examples.mdn.mozilla.net/media/cc0-images/grapefruit-slice-332-332.jpg</textarea> <br>
+        <button onclick="getImages()">Добавь кучу картинок</button> <br> <br>
+    </div>
+    <!-- task 10-12 full in script.js -->
+
+    <!-- task 13 -->
+    <div id="thirteenth"><pre style="margin:1px">localStorage                  cookies                      sessionStorage</pre>
+    </div>
+    <!-- task 14 -->
+    <div id="arrowFourteenth" hidden></div>
+    <!-- task 15 -->
+    <div id="fifteenth" onclick="helloFifteenth()">
+        <div id="infifteenth" onclick="helloFifteenthHalf(event)"></div>
+    </div>
+    <!-- task 16 -->
+    <div id="sixteenth">
+        <button onclick="greySquareVisible()">Серый полупрозрачный квадрат</button>
+    </div>
+    <!-- task 17 -->
+    <div id="seventeenth">
+        <form onsubmit="return false"><input type="submit" value="GO"></form>
+    </div>
+    <!-- task 18 -->
+    <div id="eighteenth">
+        <label for="droptarget">Select a file:</label>
+        <input id="droptarget" type="file">
+        <img id="school" src="images/school.png" alt="ball"> <br>
+        <p class="note">Note: Take that picture Sh++</p>
+    </div>
+    
+</body>
+</html>
