@@ -15,6 +15,7 @@ http.createServer(function(request, response){
             console.log(log);
             fs.appendFileSync("log/log.txt", log + "\n");
 
+            if (data === "") data = "Sh++\nHey, our server is up, hooray! And you were able to connect to it.";
             response.write(data);
             response.end();
             console.log(">> Closing connection >>\n");
