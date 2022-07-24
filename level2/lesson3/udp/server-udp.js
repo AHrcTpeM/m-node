@@ -9,7 +9,7 @@ server.on('message', function(msg, info){
     console.log(`Request time: ${new Date().toUTCString()}\nUser IP: ${info.address}` + 
         `:${info.port}\n${msg.toString()}`); 
     
-    server.send(msg, info.port, 'localhost', function(error) {
+    server.send(msg, info.port, info.address, function(error) {
         if (error) {
             client.close();
         } else {
