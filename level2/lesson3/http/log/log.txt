@@ -132,3 +132,36 @@ Received text: Добрый день, everybody!
 Request time: Sat, 23 Jul 2022 17:46:49 GMT
 User IP: ::ffff:127.0.0.1:60017
 Received text: Добрый день, everybody!
+Request time: Sun, 24 Jul 2022 08:46:28 GMT
+User IP: ::1:63540
+Received text: 
+Request time: Sun, 24 Jul 2022 08:47:07 GMT
+User IP: ::1:63561
+Received text: 
+Request time: Sun, 24 Jul 2022 08:48:04 GMT
+User IP: ::1:63562
+Received text: 
+Request time: Sun, 24 Jul 2022 08:48:06 GMT
+User IP: ::1:63562
+Received text: 
+Request time: Sun, 24 Jul 2022 08:48:12 GMT
+User IP: ::1:63602
+Received text: 
+Request time: Sun, 24 Jul 2022 08:48:35 GMT
+User IP: ::1:63616
+Received text: 
+Request time: Sun, 24 Jul 2022 08:49:19 GMT
+User IP: ::ffff:127.0.0.1:63642
+Received text: Добрый день, everybody! AWS hello dude
+Request time: Sun, 24 Jul 2022 08:49:48 GMT
+User IP: ::ffff:127.0.0.1:63658
+Received text: 
+Request time: Sun, 24 Jul 2022 08:54:09 GMT
+User IP: ::ffff:127.0.0.1:63794
+Received text: Добрый день, everybody!
+Request time: Sun, 24 Jul 2022 08:56:36 GMT
+User IP: ::1:63876
+Received text: 
+Request time: Sun, 24 Jul 2022 08:58:17 GMT
+User IP: ::1:63933
+Received text: 
