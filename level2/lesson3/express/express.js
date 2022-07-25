@@ -12,7 +12,7 @@ app.get('/', (req, res) => {
   Sh++
   Hi traveler, I'm a server, nice to meet you.
   I was deployed from a docker-container to a remote AWS-server in Frankfurt. Cool, right?\n
-  Pss, our server is up, hooray! And you were able to connect to it.`)
+  Pss, our server is up, hooray! And you were able to connect to it.\n`)
 })
 
 app.use((req, res, next) => {

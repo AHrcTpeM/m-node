@@ -4,7 +4,7 @@
   "description": "",
   "main": "express.js",
   "scripts": {
-    "start": "node express.js"
+    "start": "pm2 start express.js -i 2"
   },
   "keywords": [],
   "author": "",
