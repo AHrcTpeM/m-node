@@ -11,7 +11,7 @@ app.get('/', (req, res) => {
   res.send(`
   Sh++
   Hi traveler, I'm a server, nice to meet you.
-  I was deployed from a docker-container to a remote AWS-server in Frankfurt. Cool, right?\n
+  I was deployed on a remote AWS-server in Frankfurt using pm2. Cool, right?\n
   Pss, our server is up, hooray! And you were able to connect to it.\n`)
 })
 
