@@ -234,7 +234,6 @@
                 <button @click="getTasks()" class="primary">Поехали</button>
             </div>
         </div>
-        <h1>Hello</h1>
         <div class="wrapper login" v-if="step === 'login'">
             <h3>Доступ к учетной записи</h1>
             <div class="LoginInput">
@@ -336,7 +335,6 @@
                     })
                         .then(res => res.json())
                         .then((response) => {
-                            console.log(response.error);
                             if (response.error === 'forbidden') {
                                 this.step = 'login';
                             } else {
