@@ -1,6 +1,8 @@
 const http = require("http");
 const fs = require("fs");
-  
+
+const port = 3000;
+
 http.createServer(function(request, response){
      
     if (request.url === "/"){
@@ -27,6 +29,6 @@ http.createServer(function(request, response){
         response.end();
     }
 
-}).listen(3001, function(){
+}).listen(port, function(){
     console.log("Server started at 3000");
 });
