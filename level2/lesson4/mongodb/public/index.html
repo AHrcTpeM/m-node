@@ -214,7 +214,7 @@
         <h1 class="logo">Ш<span style="color: #27ae60">++</span></h1>  
     </header>
     <main>
-        <div class="settings">
+        <!-- <div class="settings">
             <h3>Настройки приложения:</h2>
             <label>
                 Api URL:
@@ -233,7 +233,7 @@
             <div>
                 <button @click="getTasks()" class="primary">Поехали</button>
             </div>
-        </div>
+        </div> -->
         <div class="wrapper login" v-if="step === 'login'">
             <h3>Доступ к учетной записи</h1>
             <div class="LoginInput">
@@ -324,6 +324,9 @@
                 backendSuffix() {
                     return this.backendLanguage === 'PHP' ? '.php' : '';
                 },
+            },
+            created() {          // добавили хук для запуска
+                this.getTasks()
             },
             methods: {
                 getTasks: function () {

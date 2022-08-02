@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const express_session_1 = __importDefault(require("express-session"));
 const session_file_store_1 = __importDefault(require("session-file-store"));
+const cors_1 = __importDefault(require("cors"));
 const items_1 = __importDefault(require("./routes/items"));
 const authen_1 = __importDefault(require("./routes/authen"));
 const app = (0, express_1.default)();
@@ -17,6 +18,11 @@ app.use((0, express_session_1.default)({
     secret: 'keyboard dog',
     resave: true,
     saveUninitialized: true,
+}));
+app.use((0, cors_1.default)({
+    origin: [`http://localhost:${port}`, 'http://localhost:8080'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
 }));
 app.use(express_1.default.json());
 app.use((req, res, next) => {

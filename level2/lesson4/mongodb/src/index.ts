@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 import session from 'express-session';
 import sessionStore from 'session-file-store';
+import cors from 'cors';
 
 import routerItems from './routes/items'
 import routerAuthen from './routes/authen'
@@ -16,6 +17,12 @@ app.use(session({
   resave: true,
   saveUninitialized: true,
 }));
+
+app.use(cors({
+  origin: [`http://localhost:${port}`, 'http://localhost:8080'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}))
 
 app.use(express.json());
 
