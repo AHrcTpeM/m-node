@@ -35,7 +35,7 @@ connection.query(sql).then((result) => {
         console.log("Таблица создана1");
         const users = [['admin', 'admin', ''],
                        ['user1', 'user1', '']];        
-        const sql2 = `INSERT INTO users(login, pass, session, markerID) VALUES ?`;
+        const sql2 = `INSERT INTO users(login, pass, session) VALUES ?`;
 
         connection.query(sql2, [users]).then((results) => {
             console.log('Тестовые данные добавлены');
@@ -48,7 +48,8 @@ connection.query(sql).then((result) => {
   let status = JSON.parse(JSON.stringify(result))[0].warningStatus;
   if (!status) {
     console.log("Таблица создана2");
-    const items: [number, string, boolean][] = [[1, "Buy milk", false],
+    const items: [number, string, boolean][] = [
+                  [1, "Buy milk", false],
                   [1, "Buy bread", true],
                   [1, "Do the cleaning", false],
                   [2, "Do homework", false],
