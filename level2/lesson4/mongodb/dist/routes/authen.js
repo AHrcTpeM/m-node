@@ -36,20 +36,20 @@ router.post('/api/v1/register', (req, res) => {
             res.status(302).json({ error: "User already exists" });
             return;
         }
-    })
-        .then(() => {
-        const createdUser = {
-            login: req.body.login,
-            pass: req.body.pass,
-            session: '',
-            makerId: 100,
-            items: []
-        };
-        database_1.default.insertMany(createdUser).then(function () {
-            res.status(201).json({ "ok": true });
-        }).catch(function (err) {
-            res.status(500).json({ error: "Error adding to database" });
-        });
+        else {
+            const createdUser = {
+                login: req.body.login,
+                pass: req.body.pass,
+                session: '',
+                makerId: 100,
+                items: []
+            };
+            database_1.default.insertMany(createdUser).then(function () {
+                res.status(201).json({ "ok": true });
+            }).catch(function (err) {
+                res.status(500).json({ error: "Error adding to database" });
+            });
+        }
     });
 });
 exports.default = router;
