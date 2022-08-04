@@ -9,7 +9,12 @@ router.get('/api/v1/items', (req, res) => {
             const userId = user.id;
             const sql = `SELECT * FROM items WHERE CustomerId=?`            
             connection.query(sql, userId).then(([result]) => {
-                res.json({items: result});
+                let items = JSON.parse(JSON.stringify(result));
+                items.map((elem: {checked: boolean}) => {
+                    elem.checked = Boolean(elem.checked);
+                    return elem;
+                })
+                res.json({items: items});
             })
         } else {
             res.status(303).send({

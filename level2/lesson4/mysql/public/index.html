@@ -416,7 +416,7 @@
                 },
                 markAsDone(index, id) {
                     //console.log(this.tasks[index].checked, this.tasks[index]); //внутри объекта значение checked=false, а отдельно значение checked=0 wtf?
-                    this.$set(this.tasks[index], 'checked', !this.tasks[index].checked);
+                    this.$set(this.tasks[index], 'checked', this.tasks[index].checked === false);
                     this.checked = this.tasks[index].checked;
                     this.updateTask(index, id)
                 },
