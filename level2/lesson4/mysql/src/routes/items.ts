@@ -91,6 +91,7 @@ router.put('/api/v1/items/', async (req, res) => {
 function findUser(req: Express.Request) {
     const sql4 = `SELECT * FROM users WHERE session=?`;
     const filter = req.sessionID;
+    
     return connection.query(sql4, filter).then(([result]) => {
         let user = JSON.parse(JSON.stringify(result))[0];
         return user;

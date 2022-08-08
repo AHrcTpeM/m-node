@@ -18,11 +18,10 @@ router.post('/api/v1/login', (req, res) => {
     connection.query(sql4, filter).then(([result]) =>{
                 let user = JSON.parse(JSON.stringify(result));
                 if (!user.length) {
-                    res.sendStatus(404);
+                    res.status(404).json({ "error" : 'not found' })
                     return;
                 }
                 const update: [string, number] = [req.sessionID, user[0].id];
-                
                 const sql = `UPDATE users SET session=? WHERE id=?`;
 
                 connection.query(sql, update)
