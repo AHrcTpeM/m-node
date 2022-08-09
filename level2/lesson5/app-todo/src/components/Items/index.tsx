@@ -4,11 +4,11 @@ import { Button, Input }  from 'components/ui';
 import CheckBox from 'components/CheckBox';
 import {TaskData} from 'interface/interface'
 
-function Items({onClickLoginOut} : {onClickLoginOut: () => void}) { 
-    const [todos, setTodos] = useState([
-        {id: 1, checked: false, text: 'Купить хлеб', CustomerId: 1},
-        {id: 2, checked: true, text: 'Купить масло', CustomerId: 1},
-        {id: 3, checked: false, text: 'Купить молоко', CustomerId: 1}
+function Items({onClickLoginOut}: {onClickLoginOut: () => void}) { 
+    const [todos, setTodos] = useState<TaskData[]>([
+        // {id: 1, checked: false, text: 'Купить хлеб', CustomerId: 1},
+        // {id: 2, checked: true, text: 'Купить масло', CustomerId: 1},
+        // {id: 3, checked: false, text: 'Купить молоко', CustomerId: 1}
     ])
 
     function getTasks() {
@@ -21,7 +21,6 @@ function Items({onClickLoginOut} : {onClickLoginOut: () => void}) {
                 if (todos.error === 'forbidden') {
                     console.log('forbidden');
                 } else {
-                    console.log(todos);
                     setTodos(todos.items);
                     setCountTasks(todos.items.length);
                 }                
@@ -43,9 +42,10 @@ function Items({onClickLoginOut} : {onClickLoginOut: () => void}) {
                 getTasks()
             });
         }
-
+        
     useEffect(() => {
         getTasks();
+        console.log(111);
     }, [])
 
     const [countTasks, setCountTasks] = useState(todos.length); 

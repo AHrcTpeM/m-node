@@ -1,16 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Main, WrapperLogin, WrapperItems } from "./styled";
 import Login from 'components/Login';
 import Items from 'components/Items';
 
 function Tasks() {
-    const [login, setLogin] = useState(false)
+    const [login, setLogin] = useState('');
+
+    useEffect(() => {
+        fetch('http://localhost:3005/api/v1/items', { 
+            credentials: 'include',
+            method: 'GET'
+        })
+            .then(response => response.json())
+            .then((todos: {error: string}) => {
+                if (todos.error === 'forbidden') {
+                    setLogin('login');
+                } else {
+                    setLogin('items');
+                }                
+            })
+    }, [])    
+
     function onClickLogin() {
-        setLogin(!login);
+        setLogin('items');
     }
     
     function onClickLoginOut() {
-        setLogin(!login);
+        setLogin('login');
 
         fetch('http://localhost:3005/api/v1/logout', {  
             method: 'POST',
@@ -25,10 +41,10 @@ function Tasks() {
 
     return (
         <Main>
-           {!login && <WrapperLogin>
+           { (login === 'login') && <WrapperLogin>
                  <Login onClickLogin={onClickLogin} /> 
             </WrapperLogin>}
-            {login && <WrapperItems>
+            { (login === 'items') && <WrapperItems>
                 <Items onClickLoginOut={onClickLoginOut}/>      
             </WrapperItems>}
         </Main>

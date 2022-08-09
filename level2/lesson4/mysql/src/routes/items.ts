@@ -5,6 +5,7 @@ const router = Router();
 
 router.get('/api/v1/items', (req, res) => {
     findUser(req).then((user) => {
+        console.log(user?.login);
         if (user) {
             const userId = user.id;
             const sql = `SELECT * FROM items WHERE CustomerId=?`            
