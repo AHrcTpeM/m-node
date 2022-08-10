@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import { Button, Input }  from 'components/ui';
 import CheckBox from 'components/CheckBox';
-import {TaskData} from 'interface/interface'
+import {TaskData} from 'interface/interface';
 
 function Items({onClickLoginOut}: {onClickLoginOut: () => void}) { 
     const [todos, setTodos] = useState<TaskData[]>([
@@ -10,10 +10,9 @@ function Items({onClickLoginOut}: {onClickLoginOut: () => void}) {
         // {id: 2, checked: true, text: 'Купить масло', CustomerId: 1},
         // {id: 3, checked: false, text: 'Купить молоко', CustomerId: 1}
     ])
-
-    // const urlServer = 'http://localhost:3005';
-    const urlServer = 'http://3.74.117.171:3005'
     
+    const urlServer = 'http://localhost:3005';
+
     function getTasks() {
         fetch(urlServer + '/api/v1/items', { 
             credentials: 'include',
@@ -48,7 +47,6 @@ function Items({onClickLoginOut}: {onClickLoginOut: () => void}) {
         
     useEffect(() => {
         getTasks();
-        console.log(111);
     }, [])
 
     const [countTasks, setCountTasks] = useState(todos.length); 
@@ -70,14 +68,13 @@ function Items({onClickLoginOut}: {onClickLoginOut: () => void}) {
                 .then((response) => {
                     if (response.id) {
                         getTasks();
-                        // $set(new_task, 'text', '');
                     } else {
                         alert("Произошла ошибка. Посмотрите консоль разработчика чтоб увидеть подробности.")
                     }
                 });
 
             setCountTasks(todos.length + 1);
-            // setTodos(todos.concat([{id: Date.now(), checked: false, text: value,  CustomerId: 1}]));        
+            // setTodos(todos.concat([{id: Date.now(), checked: false, text: value,  CustomerId: 1}])); // добавление на фронте без бэка       
         }
         
     }
@@ -107,7 +104,7 @@ function Items({onClickLoginOut}: {onClickLoginOut: () => void}) {
                 if (response['ok'] === true) {
                     getTasks()
                 } else {
-                    alert("Произошла ошибка. Посмотрите консоль разработчика чтоб увидеть подробности.")
+                    alert("Произошла ошибка.")
                 }
             });
         setCountTasks(todos.length - 1);

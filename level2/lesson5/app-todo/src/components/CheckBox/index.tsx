@@ -16,7 +16,10 @@ function CheckBox({item, index, onChange, deleteTask, updateTask} : {
     const [oldValue, setOldValue] = useState(item.text);
     function editInput() {
         setEdit(!edit);
-        setOldValue(value);
+        setOldValue(value);        
+    }
+    function saveInput() {
+        editInput();
         updateTask(item);
     }
     function editClose() {
@@ -36,7 +39,7 @@ function CheckBox({item, index, onChange, deleteTask, updateTask} : {
                 <input type="checkbox" style={{marginRight: '5px', color: 'violet'}} defaultChecked={item.checked} onChange={() => onChange(index)} />
                 <Label>{index + 1}.&nbsp;<InputEdit value={value} onChange={event => setValue(event.target.value)} />
                 </Label>
-                <Button margin={'0'} color={'red'} padding={'5px'} hover={'violet'} onClick={editInput}>💾</Button>
+                <Button margin={'0'} color={'red'} padding={'5px'} hover={'violet'} onClick={saveInput}>💾</Button>
                 <Button margin={'0'} color={'blue'} padding={'5px'} hover={'violet'} onClick={editClose}>✕</Button>
             </Task>}
         </>

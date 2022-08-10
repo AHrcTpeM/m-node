@@ -19,7 +19,7 @@ app.use(session({
 }));
 
 app.use(cors({
-  origin: [`http://localhost:${port}`, 'http://localhost:8080'],
+  origin: [`http://localhost:${port}`, 'http://localhost:8080', 'http://localhost:3000'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }))

@@ -6,8 +6,7 @@ function Login({onClickLogin}: {onClickLogin: () => void}) {
     const [login, setLogin] = useState('');
     const [pass, setPass] = useState('');
     
-    // const urlServer = 'http://localhost:3005';
-    const urlServer = 'http://3.74.117.171:3005'
+    const urlServer = 'http://localhost:3005'; 
     
     function sendLogin() {
         if (login.trim() !== '' && pass.trim()) {
@@ -26,7 +25,6 @@ function Login({onClickLogin}: {onClickLogin: () => void}) {
                     if (response.ok) {                  
                         localStorage.setItem('name', login);
                         onClickLogin();
-                        //getTasks();
                     } else if (response.error === 'not found') {
                         alert('Неверный логин или пароль');
                     } else {

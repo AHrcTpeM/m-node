@@ -20,7 +20,7 @@ app.use((0, express_session_1.default)({
     saveUninitialized: true,
 }));
 app.use((0, cors_1.default)({
-    origin: [`http://localhost:${port}`, 'http://localhost:8080'],
+    origin: [`http://localhost:${port}`, 'http://localhost:8080', 'http://localhost:3000'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
 }));
