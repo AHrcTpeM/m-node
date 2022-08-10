@@ -6,11 +6,14 @@ function Login({onClickLogin}: {onClickLogin: () => void}) {
     const [login, setLogin] = useState('');
     const [pass, setPass] = useState('');
     
+    // const urlServer = 'http://localhost:3005';
+    const urlServer = 'http://3.74.117.171:3005'
+    
     function sendLogin() {
         if (login.trim() !== '' && pass.trim()) {
             let params = JSON.stringify({ login: login, pass: pass });
             
-            fetch('http://localhost:3005/api/v1/login', {
+            fetch(urlServer + '/api/v1/login', {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -36,7 +39,7 @@ function Login({onClickLogin}: {onClickLogin: () => void}) {
     function register() {
         if (login.trim() !== '' && pass.trim()) {
             let params = JSON.stringify({ login: login, pass: pass });
-            fetch('http://localhost:3005/api/v1/register', {
+            fetch(urlServer + '/api/v1/register', {
                 method:  'POST',
                 body: params,
                 headers: {

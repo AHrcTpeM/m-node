@@ -6,8 +6,10 @@ import Items from 'components/Items';
 function Tasks() {
     const [login, setLogin] = useState('');
 
+    // const urlServer = 'http://localhost:3005';
+    const urlServer = 'http://3.74.117.171:3005'
     useEffect(() => {
-        fetch('http://localhost:3005/api/v1/items', { 
+        fetch(urlServer + '/api/v1/items', { 
             credentials: 'include',
             method: 'GET'
         })
@@ -28,7 +30,7 @@ function Tasks() {
     function onClickLoginOut() {
         setLogin('login');
 
-        fetch('http://localhost:3005/api/v1/logout', {  
+        fetch(urlServer + '/api/v1/logout', {  
             method: 'POST',
             credentials: 'include',
         }).then(res => res.json())
@@ -47,6 +49,8 @@ function Tasks() {
             { (login === 'items') && <WrapperItems>
                 <Items onClickLoginOut={onClickLoginOut}/>      
             </WrapperItems>}
+
+            { (login === '') && <span>Ошибка. Возможно не запущенный бэкенд.</span> }
         </Main>
     )
 }

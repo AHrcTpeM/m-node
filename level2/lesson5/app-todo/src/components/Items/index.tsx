@@ -11,8 +11,11 @@ function Items({onClickLoginOut}: {onClickLoginOut: () => void}) {
         // {id: 3, checked: false, text: 'Купить молоко', CustomerId: 1}
     ])
 
+    // const urlServer = 'http://localhost:3005';
+    const urlServer = 'http://3.74.117.171:3005'
+    
     function getTasks() {
-        fetch('http://localhost:3005/api/v1/items', { 
+        fetch(urlServer + '/api/v1/items', { 
             credentials: 'include',
             method: 'GET'
         })
@@ -29,7 +32,7 @@ function Items({onClickLoginOut}: {onClickLoginOut: () => void}) {
 
     function updateTask (item: TaskData) {        
         let request = JSON.stringify(item);
-        fetch('http://localhost:3005/api/v1/items', {
+        fetch(urlServer + '/api/v1/items', {
             method:'PUT',
             body: request,
             credentials: 'include',
@@ -56,7 +59,7 @@ function Items({onClickLoginOut}: {onClickLoginOut: () => void}) {
             setValue('');
 
             let request = JSON.stringify({ text: value });
-            fetch('http://localhost:3005/api/v1/items', {
+            fetch(urlServer + '/api/v1/items', {
                 method: 'POST',
                 body: request,
                 credentials: 'include',
@@ -92,7 +95,7 @@ function Items({onClickLoginOut}: {onClickLoginOut: () => void}) {
 
     function deleteTask(index: number): React.FormEventHandler<HTMLButtonElement> | undefined {
         let request = JSON.stringify({ id: index, });
-        fetch('http://localhost:3005/api/v1/items', {
+        fetch(urlServer + '/api/v1/items', {
             method: 'DELETE',
             body: request,
             credentials: 'include',
