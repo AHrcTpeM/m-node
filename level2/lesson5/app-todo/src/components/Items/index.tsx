@@ -41,7 +41,7 @@ function Items({onClickLoginOut}: {onClickLoginOut: () => void}) {
         })
             .then(res => res.json())
             .then(() => {
-                getTasks()
+                getTasks();
             });
         }
         

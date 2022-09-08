@@ -25,37 +25,33 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mysql = __importStar(require("mysql2"));
 require("dotenv/config");
-const { MYSQL_USER, MYSQL_PASSWORD, MYSQL_PATH, } = process.env;
+const { MYSQL_USER, MYSQL_PASSWORD, MYSQL_PATH, MYSQL_SCHEMA } = process.env;
 const connection = mysql.createPool({
     host: MYSQL_PATH,
     user: MYSQL_USER,
-    database: "usersdb2",
+    database: MYSQL_SCHEMA,
     password: MYSQL_PASSWORD
 }).promise();
-const sql = `create table if not exists users(
+const sql = `create table if not exists books(
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  login VARCHAR(20),
+  pass VARCHAR(20),
+  session VARCHAR(255)
+)`;
+const sql1 = `CREATE TABLE if not exists author(
     id INT PRIMARY KEY AUTO_INCREMENT,
-    login VARCHAR(20),
-    pass VARCHAR(20),
-    session VARCHAR(255)
-  )`;
-const sql1 = `CREATE TABLE if not exists items(
-      id INT PRIMARY KEY AUTO_INCREMENT,
-      CustomerId INT,
-      text VARCHAR(255),
-      checked BOOL,
-      FOREIGN KEY (CustomerId)  REFERENCES users (id)
-  )`;
-connection.query('CREATE SCHEMA if not exists `new_schema`').then((result) => {
-    console.log(JSON.parse(JSON.stringify(result))[0].warningStatus);
-    console.log('CREATE SCHEMA');
-});
+    CustomerId INT,
+    text VARCHAR(255),
+    checked BOOL,
+    FOREIGN KEY (CustomerId)  REFERENCES books (id)
+)`;
 connection.query(sql).then((result) => {
     let status = JSON.parse(JSON.stringify(result))[0].warningStatus;
     if (!status) {
         console.log("Таблица создана1");
         const users = [['admin', 'admin', ''],
             ['user1', 'user1', '']];
-        const sql2 = `INSERT INTO users(login, pass, session) VALUES ?`;
+        const sql2 = `INSERT INTO books(login, pass, session) VALUES ?`;
         connection.query(sql2, [users]).then((results) => {
             console.log('Тестовые данные добавлены');
         });
@@ -72,21 +68,19 @@ connection.query(sql).then((result) => {
             [2, "Do homework", false],
             [2, "Read smart book", false]
         ];
-        const sql3 = `INSERT INTO items(CustomerId, text, checked) VALUES ?`;
+        const sql3 = `INSERT INTO author(CustomerId, text, checked) VALUES ?`;
         connection.query(sql3, [items]).then((results) => {
             console.log('Тестовые данные добавлены');
         });
     }
 }));
-// const sql4 = `SELECT * FROM items WHERE CustomerId=?`;
-// const filter = 2;
-// connection.query(sql4, filter).
-// then((results) => {
-//     console.log(results[0]);
-//         var string=JSON.stringify(results[0]);
-//         console.log('>> string: ', string );
-//         var json =  JSON.parse(string);   // JSON.parse(JSON.stringify(results[0]));
-//         console.log('>> json: ', json);
-//         console.log('>> user.name: ', json[0].text);
-// });
+connection.query(`CREATE SCHEMA if not exists ${MYSQL_SCHEMA}`).then((result) => {
+    console.log(JSON.parse(JSON.stringify(result))[0].warningStatus);
+    if (!JSON.parse(JSON.stringify(result))[0].warningStatus) {
+        console.log('CREATE SCHEMA');
+    }
+    else {
+        console.log('SCHEMA EXISTS');
+    }
+});
 exports.default = connection;

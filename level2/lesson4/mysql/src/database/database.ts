@@ -21,14 +21,14 @@ const sql = `create table if not exists users(
     session VARCHAR(255)
   )`;
 
-  const sql1 = `CREATE TABLE if not exists items
-  (
+  const sql1 = `CREATE TABLE if not exists items(
       id INT PRIMARY KEY AUTO_INCREMENT,
       CustomerId INT,
       text VARCHAR(255),
       checked BOOL,
       FOREIGN KEY (CustomerId)  REFERENCES users (id)
-  )`
+  )`;
+
 connection.query(sql).then((result) => {
       let status = JSON.parse(JSON.stringify(result))[0].warningStatus;
       if (!status) {
@@ -69,11 +69,11 @@ connection.query(sql).then((result) => {
 // connection.query(sql4, filter).
 // then((results) => {
 //     console.log(results[0]);
-//         // var string=JSON.stringify(results[0]);
-//         // console.log('>> string: ', string );
-//         // var json =  JSON.parse(string);   // JSON.parse(JSON.stringify(results[0]));
-//         // console.log('>> json: ', json);
-//         // console.log('>> user.name: ', json[0].text);
+//         var string=JSON.stringify(results[0]);
+//         console.log('>> string: ', string );
+//         var json =  JSON.parse(string);   // JSON.parse(JSON.stringify(results[0]));
+//         console.log('>> json: ', json);
+//         console.log('>> user.name: ', json[0].text);
 // });
 
 export default connection;

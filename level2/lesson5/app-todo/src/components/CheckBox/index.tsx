@@ -20,6 +20,7 @@ function CheckBox({item, index, onChange, deleteTask, updateTask} : {
     }
     function saveInput() {
         editInput();
+        item.text = value;
         updateTask(item);
     }
     function editClose() {

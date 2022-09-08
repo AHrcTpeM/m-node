@@ -1,4 +1,4 @@
-pm2 start --name <your-app-name> npm -- start
+pm2 start --name app-todo npm -- start
 
 # Getting Started with Create React App
 
