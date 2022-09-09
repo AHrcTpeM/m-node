@@ -1,4 +1,5 @@
 create in mysql new schema
+'CREATE SCHEMA `new_schema` ;'
 
 add .env
 "MYSQL_USER=root
