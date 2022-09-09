@@ -13,6 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteBook = exports.addBook = exports.getAdmin = void 0;
+const fs_1 = require("fs");
+const path_1 = __importDefault(require("path"));
 const connect_bd_1 = __importDefault(require("../migrations/connect_bd"));
 function getAdmin(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -28,13 +30,6 @@ function getAdmin(req, res) {
         connect_bd_1.default.query(sql).then(([result]) => {
             let items = JSON.parse(JSON.stringify(result));
             //console.log('items', items);
-            // let {page, search} = req.query;
-            // let searchBooks = items;
-            // //console.log(searchBooks);
-            // if (typeof search === 'string' && search !== '') {
-            //     let nsearch = search;
-            //     searchBooks = items.filter((item) => item.title.toLowerCase().includes(nsearch) || item.author.toLowerCase().includes(nsearch));   
-            // }        
             res.render('admin', { books: items, page: page || 0, search });
         }).catch(err => {
             console.log(err);
@@ -44,17 +39,19 @@ function getAdmin(req, res) {
 }
 exports.getAdmin = getAdmin;
 function addBook(req, res) {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
-        console.log(req.body);
+        //console.log('body', req.body);
+        //console.log(req.file?.filename);
         //console.log(req.headers.host);
         const sql = `
                 INSERT INTO authors(author) 
                 VALUES 
                 ('${req.body.author1}');
 
-                INSERT INTO books(year, title, pages, isbn) 
+                INSERT INTO books(year, title, pages, isbn, image) 
                 VALUES 
-                (${req.body.year}, '${req.body.title}', ${req.body.pages}, '${req.body.isbn}');
+                (${req.body.year}, '${req.body.title}', ${req.body.pages}, '${req.body.isbn}', '${(_a = req.file) === null || _a === void 0 ? void 0 : _a.filename}');
 
                 SELECT MAX(id) FROM goodbooks.authors;
                 SELECT MAX(id) FROM goodbooks.books;
@@ -69,7 +66,9 @@ function addBook(req, res) {
         })
             .then(([result]) => {
             //console.log(result);
-            res.json({ status: 'OK' });
+            req.query = { search: req.body.title };
+            getAdmin(req, res);
+            //res.json({status: 'OK'});
         }).catch(err => {
             console.log(err);
             res.status(500).json(err);
@@ -80,15 +79,25 @@ exports.addBook = addBook;
 function deleteBook(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         //console.log(req.body);
-        const sql = `SELECT author_id FROM books_authors WHERE book_id = ${req.body.id};`;
+        const sql = `SELECT author_id FROM books_authors WHERE book_id = ${req.body.id};
+                 SELECT image FROM books WHERE id = ${req.body.id};`;
         connect_bd_1.default.query(sql).then(([result]) => {
-            let items = JSON.parse(JSON.stringify(result))[0];
-            //console.log(items);
+            let image = JSON.parse(JSON.stringify(result))[1][0].image;
+            if (image.length > 10) {
+                (0, fs_1.unlink)(path_1.default.join(__dirname + `/../../public/images/${image}`), (err) => {
+                    if (err) {
+                        console.error(err);
+                    }
+                });
+                console.log('-------Файл удален-------');
+            }
+            let items = JSON.parse(JSON.stringify(result))[0][0];
+            //console.log(result);
             if (items) {
-                const sql = `
+                const sql = `                
                 DELETE FROM books_authors WHERE book_id = ${req.body.id};
                 DELETE FROM books WHERE id = ${req.body.id};
-                DELETE FROM authors WHERE id = ${items.author_id};        
+                DELETE FROM authors WHERE id = ${items.author_id};                        
                 `;
                 return connect_bd_1.default.query(sql);
             }

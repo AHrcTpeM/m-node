@@ -38,7 +38,7 @@
     <section id="main" class="main-wrapper">
       <% if (search) {%>
         <div style="text-align: center;">
-            По запросу: '<b style="color: green;"><%= search%></b>' , найдено книг: <b style="color: green;"><%= books.length%></b> 
+            По запросу: '<b style="color: green;"><%= search%></b>' , найдено книг: <b style="color: green;"><%= books.length%></b>&nbsp;&nbsp;<a href="/admin">Сброс</a>
         </div> 
       <% } %> 
     <div class="conteiner">
@@ -60,7 +60,12 @@
                                 for (let i = page * OFFSET; i < end; i++) {
                             %>
                                 <tr>
-                                    <td><%=books[i].title%></td>
+                                    <td >
+                                      <div class="row">                                        
+                                        <div class="col-auto"><img src="./images/<%=books[i].image%>" alt='image' style="width: 25px; "></div>
+                                        <div class="col"><%=books[i].title%></div>
+                                     </div>
+                                    </td>
                                     <td><%=books[i].author%></td>
                                     <td><%=books[i].year%></td>
                                     <td><a id="<%=books[i].book_id%>" href="" onclick="deleteBook(event)">удалить</a></td>
@@ -114,7 +119,7 @@
 
                 <div class="col">
                     <span style="padding: 20px;"><b>Добавить новую книгу</b></span>
-                    <form id="myform">
+                    <form id="myform-" action="/admin" method="post" enctype="multipart/form-data">
                         <div class="row" style="margin: 10px;">
                           <div class="col">
                             <input name="title" type="text" class="form-control" placeholder="название книги">
@@ -150,6 +155,10 @@
                         <div class="form-group" style="margin: 20px;">
                             <label for="exampleFormControlFile1">Загрузить картинку</label>
                             <input name="image" type="file" class="form-control-file" id="exampleFormControlFile1">
+
+                            <div class="row">
+                            <span id="output"></span>
+                        </div>
                         </div>
                         <div style="margin: 20px;">
                             <button type="submit" class="btn btn-success" id="mybutton">Добавить</button>
@@ -165,11 +174,12 @@
     <%- include('./partials/footer', {team: 'AdminTeam*'}) %>
     
     <script>
-      const form = document.getElementById('myform');
+      // const form1 = document.forms;
+      // const form = document.getElementById('myform');
       
-      form.addEventListener('submit', retrieveFormValue);
+      // form.addEventListener('submit', addBook);
 
-      function retrieveFormValue(event) {
+      function addBook(event) {
         event.preventDefault();
         const field = document.querySelectorAll('input, textarea');
         const values = {};
@@ -179,7 +189,7 @@
           values[name] = value
         })
         console.log(values);
-        const request = JSON.stringify(values);
+        const request = JSON.stringify(values);        
         fetch('http://localhost:3000/admin', {
                   method:'POST',
                   body: request,
@@ -212,7 +222,32 @@
                   window.location.href = `/admin/?page=<%= +page %>${querySearch}`;
                   //console.log('это тут', json);
               });              
-      }      
+      }
+      
+      document.getElementById('exampleFormControlFile1').addEventListener('change', handleFileSelect, false);
+      function handleFileSelect(evt) {
+        //console.log(evt);
+        let file = evt.target.files; // FileList object
+        let f = file[0];
+        //console.log(f);
+        // Only process image files.
+        if (!f.type.match('image.*')) {
+            alert("Image only please....");
+            return;
+        }
+        let reader = new FileReader();
+        // Closure to capture the file information.
+        reader.onload = (function(theFile) {
+            return function(e) {
+                // Render thumbnail.
+                let span = document.createElement('span');
+                span.innerHTML = ['<img style="width: 100px;" class="thumb" title="', escape(theFile.name), '" src="', e.target.result, '" />'].join('');
+                document.getElementById('output').insertBefore(span, null);
+            };
+        })(f);
+        // Read in the image file as a data URL.
+        reader.readAsDataURL(f);
+    }    
     </script>
 </body>
 </html>

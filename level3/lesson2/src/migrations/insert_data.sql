@@ -25,32 +25,32 @@ VALUES
 ('Джей Макгаврен'),
 ('Дрю Нейл');
 
-INSERT INTO books(id, year, title, pages, isbn) 
+INSERT INTO books(id, year, title, pages, isbn, image) 
 VALUES 
-(22, 2010, 'СИ++ И КОМПЬЮТЕРНАЯ ГРАФИКА', 351, '978-3-16-148410-0'),
-(23, 2015, 'Программирование на языке Go!', 300, '978-3-16-148410-0'),    
-(25, 2020, 'Толковый словарь сетевых терминов и аббревиатур', 311, '402, 978-3-16-148410-0'),
-(26, 2011, 'Python for Data Analysis', 265, '978-3-16-148410-0'),
-(27, 2019, 'Thinking in Java (4th Edition)', 305, '978-3-16-148410-0'),
-(29, 2015, 'Introduction to Algorithms', 280, '978-3-16-148410-0'),
-(31, 2014, 'JavaScript Pocket Reference', 352, '978-3-16-148410-0'),
-(32, 2016, 'Adaptive Code via C#: Class and Interface Design, Design Patterns, and SOLID Principles', 340, '978-3-16-148410-0'),
-(33, 2017, 'SQL: The Complete Referenc', 321, '978-3-16-148410-0'),
-(34, 2011, 'PHP and MySQL Web Development', 582, '978-3-16-148410-0'),
-(35, 2019, 'Статистический анализ и визуализация данных с помощью R', 366, '978-3-16-148410-0'),
-(36, 2012, 'Computer Coding for Kid', 374, '978-3-16-148410-0'),
-(37, 2013, 'Exploring Arduino: Tools and Techniques for Engineering Wizardry', 295, '978-3-16-148410-0'),
-(38, 2014, 'Программирование микроконтроллеров для начинающих и не только', 374, '978-3-16-148410-0'),
-(39, 2018, 'The Internet of Things', 410, '978-3-16-148410-0'),
-(40, 2021, 'Sketching User Experiences: The Workbook', 395, '978-3-16-148410-0'),
-(41, 2020, 'InDesign CS6', 332, '978-3-16-148410-0'),
-(42, 2014, 'Адаптивный дизайн. Делаем сайты для любых устройств', 388, '978-3-16-148410-0'),
-(43, 2017, 'Android для разработчиков', 342, '978-3-16-148410-0'),
-(44, 2015, 'Clean Code: A Handbook of Agile Software Craftsmanship', 417, '978-3-16-148410-0'),
-(45, 2016, 'Swift Pocket Reference: Programming for iOS and OS X', 299, '978-3-16-148410-0'),
-(46, 2010, 'NoSQL Distilled: A Brief Guide to the Emerging World of Polyglot Persistence', 324, '978-3-16-148410-0'),
-(47, 2011, 'Head First Ruby', 381, '978-3-16-148410-0'),
-(48, 2019, 'Practical Vim', 360, '978-3-16-148410-0');
+(22, 2010, 'СИ++ и компьютерная графика', 351, '978-3-16-148410-0', '22.jpg'),
+(23, 2015, 'Программирование на языке Go!', 300, '978-3-16-148410-0', '23.jpg'),    
+(25, 2020, 'Толковый словарь сетевых терминов и аббревиатур', 311, '402, 978-3-16-148410-0', '25.jpg'),
+(26, 2011, 'Python for Data Analysis', 265, '978-3-16-148410-0', '26.jpg'),
+(27, 2019, 'Thinking in Java (4th Edition)', 305, '978-3-16-148410-0', '27.jpg'),
+(29, 2015, 'Introduction to Algorithms', 280, '978-3-16-148410-0', '29.jpg'),
+(31, 2014, 'JavaScript Pocket Reference', 352, '978-3-16-148410-0', '31.jpg'),
+(32, 2016, 'Adaptive Code via C#: Class and Interface Design, Design Patterns, and SOLID Principles', 340, '978-3-16-148410-0', '32.jpg'),
+(33, 2017, 'SQL: The Complete Referenc', 321, '978-3-16-148410-0', '33.jpg'),
+(34, 2011, 'PHP and MySQL Web Development', 582, '978-3-16-148410-0', '34.jpg'),
+(35, 2019, 'Статистический анализ и визуализация данных с помощью R', 366, '978-3-16-148410-0', '35.jpg'),
+(36, 2012, 'Computer Coding for Kid', 374, '978-3-16-148410-0', '36.jpg'),
+(37, 2013, 'Exploring Arduino: Tools and Techniques for Engineering Wizardry', 295, '978-3-16-148410-0', '37.jpg'),
+(38, 2014, 'Программирование микроконтроллеров для начинающих и не только', 374, '978-3-16-148410-0', '38.jpg'),
+(39, 2018, 'The Internet of Things', 410, '978-3-16-148410-0', '39.jpg'),
+(40, 2021, 'Sketching User Experiences: The Workbook', 395, '978-3-16-148410-0', '40.jpg'),
+(41, 2020, 'InDesign CS6', 332, '978-3-16-148410-0', '41.jpg'),
+(42, 2014, 'Адаптивный дизайн. Делаем сайты для любых устройств', 388, '978-3-16-148410-0', '42.jpg'),
+(43, 2017, 'Android для разработчиков', 342, '978-3-16-148410-0', '43.jpg'),
+(44, 2015, 'Clean Code: A Handbook of Agile Software Craftsmanship', 417, '978-3-16-148410-0', '44.jpg'),
+(45, 2016, 'Swift Pocket Reference: Programming for iOS and OS X', 299, '978-3-16-148410-0', '45.jpg'),
+(46, 2010, 'NoSQL Distilled: A Brief Guide to the Emerging World of Polyglot Persistence', 324, '978-3-16-148410-0', '46.jpg'),
+(47, 2011, 'Head First Ruby', 381, '978-3-16-148410-0', '47.jpg'),
+(48, 2019, 'Practical Vim', 360, '978-3-16-148410-0', '48.jpg');
 
 INSERT INTO books_authors(book_id, author_id) 
 VALUES 

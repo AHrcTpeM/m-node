@@ -30,7 +30,7 @@ const mysql = __importStar(require("mysql2"));
 require("dotenv/config");
 const fs_1 = require("fs");
 const path_1 = __importDefault(require("path"));
-const DROP_TABLES = true;
+const DROP_TABLES = false;
 const { MYSQL_USER, MYSQL_PASSWORD, MYSQL_PATH, MYSQL_SCHEMA } = process.env;
 const connection = mysql.createPool({
     host: MYSQL_PATH,

@@ -16,15 +16,7 @@ export async function getBooks(req: Request, res: Response) {
 
     connection.query(sql).then(([result]) => {
         let items: MyBooks[] = JSON.parse(JSON.stringify(result));
-        //console.log('items', result);
-
-        // let {page, search} = req.query;
-        // let searchBooks = items;
-        // //console.log(searchBooks);
-        // if (typeof search === 'string' && search !== '') {
-        //     let nsearch = search;
-        //     searchBooks = items.filter((item) => item.title.toLowerCase().includes(nsearch) || item.author.toLowerCase().includes(nsearch));   
-        // }     
+        //console.log('items', result);  
         res.render('index', {books: items, page: page || 0, search})
     }).catch(err =>{
         console.log(err);
@@ -50,7 +42,7 @@ export async function getBook(req: Request, res: Response) {
         res.render('book', {book: items})
     }).catch(err =>{
         console.log(err);
-        res.status(500).json(err);
+        res.status(500).json({error: err});
       });
 
 }
@@ -64,7 +56,7 @@ export async function addClick(req: Request, res: Response) {
         res.json({status: 'OK'});
     }).catch(err =>{
         console.log(err);
-        res.status(500).json(err);
+        res.status(500).json({error: err});
       });
 
 }

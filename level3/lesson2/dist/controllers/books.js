@@ -27,14 +27,7 @@ function getBooks(req, res) {
     WHERE title LIKE '%${search}%' OR author LIKE '%${search}%' OR year LIKE '%${search}%';`;
         connect_bd_1.default.query(sql).then(([result]) => {
             let items = JSON.parse(JSON.stringify(result));
-            //console.log('items', result);
-            // let {page, search} = req.query;
-            // let searchBooks = items;
-            // //console.log(searchBooks);
-            // if (typeof search === 'string' && search !== '') {
-            //     let nsearch = search;
-            //     searchBooks = items.filter((item) => item.title.toLowerCase().includes(nsearch) || item.author.toLowerCase().includes(nsearch));   
-            // }     
+            //console.log('items', result);  
             res.render('index', { books: items, page: page || 0, search });
         }).catch(err => {
             console.log(err);

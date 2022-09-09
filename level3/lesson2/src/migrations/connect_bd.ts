@@ -3,7 +3,7 @@ import 'dotenv/config';
 import { readFileSync } from 'fs';
 import path from 'path';
 
-const DROP_TABLES = true;
+const DROP_TABLES = false;
 
 const {
   MYSQL_USER,
