@@ -1,8 +1,11 @@
 import express from "express";
 import basicAuth from 'express-basic-auth';
 import path from "path";
+import { startCron } from "./migrations/cron_schedule";
 
 import router from "./router/router";
+
+startCron();
 
 const app = express();
 app.use(express.json());
@@ -39,6 +42,10 @@ app.use('/admin', basicAuth({
 }));
 
 app.use(router);
+
+app.use(function (req, res, next) {
+  res.status(404).send("404 Not Found")
+});
 
 app.listen(port, function () {
   console.log(`Server listens port: ${port}`);

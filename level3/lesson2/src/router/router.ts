@@ -38,7 +38,6 @@ router.route('/admin')
 //     res.json({ uri: `${req.headers.host}/${req.file?.filename}`})
 // })
 .delete(deleteBook)
-// .put(update);
 
 router.route('/')
 .get(getBooks)
@@ -50,12 +49,5 @@ router.route('/')
 router.route('/book/:id')
 .get(getBook)
 .post(addClick);
-
-router.post('/file',  uploader.single("file"), (req: Request, res: Response) => {
-    console.log(req.body);
-    console.log(req.file);
-    console.log(req.file?.filename);
-    res.json({ uri: `${req.headers.host}/${req.file?.filename}`});
-})
 
 export default router;

@@ -11,12 +11,13 @@ CREATE TABLE if not exists books(
 
 CREATE TABLE if not exists authors(
     id INT PRIMARY KEY AUTO_INCREMENT,
-    author VARCHAR(255) NOT NULL
+    author VARCHAR(255) NOT NULL UNIQUE
     );
 
 CREATE TABLE if not exists books_authors(
     book_id INT NOT NULL,
     author_id INT NOT NULL,
     FOREIGN KEY (book_id) REFERENCES books(id),
-    FOREIGN KEY (author_id) REFERENCES authors(id)
+    FOREIGN KEY (author_id) REFERENCES authors(id),
+    UNIQUE (book_id, author_id)
     );

@@ -1,4 +1,4 @@
-<% 
+<%
     const OFFSET = 5;
     const topPage = Math.max(Math.ceil(books.length / OFFSET) - 1, 0);
 
@@ -35,7 +35,7 @@
 
 <body>
     <%- include('./partials/header', {placeholder: 'Find a book', visibility: 'visibility:none', url: 'admin'}) %>
-    <section id="main" class="main-wrapper">
+    <section id="main" class="main-wrapper">      
       <% if (search) {%>
         <div style="text-align: center;">
             По запросу: '<b style="color: green;"><%= search%></b>' , найдено книг: <b style="color: green;"><%= books.length%></b>&nbsp;&nbsp;<a href="/admin">Сброс</a>
@@ -62,11 +62,15 @@
                                 <tr>
                                     <td >
                                       <div class="row">                                        
-                                        <div class="col-auto"><img src="./images/<%=books[i].image%>" alt='image' style="width: 25px; "></div>
+                                        <div class="col-auto">
+                                          <a href="http://localhost:3000/book/<%=books[i].book_id%>">               
+                                          <img src="./images/<%=books[i].image%>" alt='image' style="width: 25px; ">
+                                          </a>
+                                        </div>
                                         <div class="col"><%=books[i].title%></div>
                                      </div>
                                     </td>
-                                    <td><%=books[i].author%></td>
+                                    <td><%=books[i].authors%></td>
                                     <td><%=books[i].year%></td>
                                     <td><a id="<%=books[i].book_id%>" href="" onclick="deleteBook(event)">удалить</a></td>
                                     <td><%=books[i].view%> / <%=books[i].click%></td>
@@ -122,15 +126,15 @@
                     <form id="myform-" action="/admin" method="post" enctype="multipart/form-data">
                         <div class="row" style="margin: 10px;">
                           <div class="col">
-                            <input name="title" type="text" class="form-control" placeholder="название книги">
+                            <input name="title" type="text" class="form-control" placeholder="название книги" required>
                           </div>
                           <div class="col">
-                            <input name="author1" type="text" class="form-control" placeholder="автор1">
+                            <input name="author1" type="text" class="form-control" placeholder="автор1" required>
                           </div>
                         </div>
                         <div class="row" style="margin: 10px;">
                             <div class="col">
-                              <input name="year" type="text" class="form-control" placeholder="год издания">
+                              <input name="year" type="number" class="form-control" placeholder="год издания" required>
                             </div>
                             <div class="col">
                               <input name="author2" type="text" class="form-control" placeholder="автор2">
@@ -138,7 +142,7 @@
                         </div>
                         <div class="row" style="margin: 10px;">
                             <div class="col">
-                                <input name="pages" type="text" class="form-control" placeholder="кол. страниц">
+                                <input name="pages" type="text" class="form-control" placeholder="кол. страниц" required pattern="\d\d\d?\d?">
                             </div>
                             <div class="col">
                                 <input name="author3" type="text" class="form-control" placeholder="автор3">
@@ -146,10 +150,10 @@
                         </div>
                         <div class="row" style="margin: 10px;">
                             <div class="col">
-                                <input name="isbn" type="text" class="form-control" placeholder="isbn">
+                                <input name="isbn" type="text" class="form-control" placeholder="isbn" required>
                             </div>
                             <div class="col">
-                                <textarea name="description" class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="описание книги"></textarea>
+                                <textarea name="description" class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="описание книги" required></textarea>
                             </div>
                         </div>
                         <div class="form-group" style="margin: 20px;">
@@ -247,7 +251,7 @@
         })(f);
         // Read in the image file as a data URL.
         reader.readAsDataURL(f);
-    }    
+    }
     </script>
 </body>
 </html>

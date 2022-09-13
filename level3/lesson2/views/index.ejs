@@ -1,5 +1,5 @@
 <% 
-    const OFFSET = 7;
+    const OFFSET = 12;
     const topPage = Math.max(Math.ceil(books.length / OFFSET) - 1, 0);
 
     if (+page < 0) {
@@ -16,7 +16,7 @@
 <%- include('./partials/head', {title: 'shpp-library+'}) %>
 
 <body data-gr-c-s-loaded="true" class="">
-    <%- include('./partials/header', {placeholder: 'Find a book', visibility: 'visibility:none', url: ''}) %>
+    <%- include('./partials/header', {placeholder: 'Find a book', visibility: 'visibility:collapse', url: ''}) %>
     <section id="main" class="main-wrapper">
         <div class="container">
             <div id="content" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">

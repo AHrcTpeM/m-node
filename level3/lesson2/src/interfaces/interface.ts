@@ -9,4 +9,5 @@ export interface MyBooks {
     book_id: number;
     author_id: number;
     author: string;
+    authors: string;
 }

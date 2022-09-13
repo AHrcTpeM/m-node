@@ -9,7 +9,7 @@ if (end > books.length)
 for (let i = start; i < end; i++) {
     let id = books[i].book_id;
     let title = books[i].title;
-    let author = books[i].author;
+    let authors = books[i].authors;
     let image = books[i].image;
 %>
     <div data-book-id='<%= id%>' class="book_item col-xs-6 col-sm-3 col-md-2 col-lg-2">
@@ -17,7 +17,7 @@ for (let i = start; i < end; i++) {
             <a href="http://localhost:3000/book/<%= id%>"><img src="./images/<%= image%>" alt='<%= title%>'>
                 <div data-title="<%= title%>" class="blockI" style="height: 46px;">
                     <div data-book-title="<%= title%>" class="title size_text"><%= title%></div>
-                    <div data-book-author="<%= author%>" class="author"><%= author%></div>
+                    <div data-book-author="<%= authors%>" class="author"><%= authors%></div>
                 </div>
             </a>
             <a href="http://localhost:3000/book/<%= id%>">

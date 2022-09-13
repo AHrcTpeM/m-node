@@ -4,7 +4,7 @@
 <%- include('./partials/head', {title: 'shpp-library+'}) %>
 
 <body data-gr-c-s-loaded="true" class="">
-    <%- include('./partials/header', {placeholder: 'Find a book', visibility: 'visibility:none', url: ''}) %>
+    <%- include('./partials/header', {placeholder: 'Find a book', visibility: 'visibility:collapse', url: ''}) %>
 
     <section id="main" class="main-wrapper">
         <div class="container">
@@ -38,7 +38,7 @@
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <div class="bookLastInfo">
-                                <div class="bookRow"><span class="properties">автор:</span><span id="author"><%= book.author%></span></div>
+                                <div class="bookRow"><span class="properties">автор:</span><span id="author"><%= book.authors%></span></div>
                                 <div class="bookRow"><span class="properties">год:</span><span id="year"><%= book.year%></span></div>
                                 <div class="bookRow"><span class="properties">страниц:</span><span id="pages"><%= book.pages%></span></div>
                                 <div class="bookRow"><span class="properties">isbn:</span><span id="isbn"><%= book.isbn%></span></div>

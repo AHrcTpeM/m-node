@@ -3,7 +3,7 @@ import 'dotenv/config';
 import { readFileSync } from 'fs';
 import path from 'path';
 
-const DROP_TABLES = false;
+const DROP_TABLES = false;  // true - drop table and init again
 
 const {
   MYSQL_USER,
@@ -23,6 +23,8 @@ const connection = mysql.createPool({
 let init = readFileSync(path.join(__dirname + "/../../src/migrations/init_db.sql")).toString();
 let insert = readFileSync(path.join(__dirname + "/../../src/migrations/insert_data.sql")).toString();
 let drop = readFileSync(path.join(__dirname + "/../../src/migrations/drop_tables.sql")).toString();
+
+//let backup = readFileSync(path.join(__dirname + "/../../src/migrations/backup/dump.sql")).toString();
 
 let sql = DROP_TABLES ? drop : 'USE goodbooks';
 

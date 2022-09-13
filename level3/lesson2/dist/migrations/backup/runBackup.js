@@ -30,7 +30,7 @@ const mysql = __importStar(require("mysql2"));
 require("dotenv/config");
 const fs_1 = require("fs");
 const path_1 = __importDefault(require("path"));
-const DROP_TABLES = false; // true - drop table and init again
+const NAME_DUMP = (0, fs_1.readFileSync)(path_1.default.join(__dirname + "/../../../src/migrations/backup/nameDump.txt"));
 const { MYSQL_USER, MYSQL_PASSWORD, MYSQL_PATH, MYSQL_SCHEMA } = process.env;
 const connection = mysql.createPool({
     host: MYSQL_PATH,
@@ -39,30 +39,11 @@ const connection = mysql.createPool({
     password: MYSQL_PASSWORD,
     multipleStatements: true
 }).promise();
-let init = (0, fs_1.readFileSync)(path_1.default.join(__dirname + "/../../src/migrations/init_db.sql")).toString();
-let insert = (0, fs_1.readFileSync)(path_1.default.join(__dirname + "/../../src/migrations/insert_data.sql")).toString();
-let drop = (0, fs_1.readFileSync)(path_1.default.join(__dirname + "/../../src/migrations/drop_tables.sql")).toString();
-//let backup = readFileSync(path.join(__dirname + "/../../src/migrations/backup/dump.sql")).toString();
-let sql = DROP_TABLES ? drop : 'USE goodbooks';
-connection.query(sql).then((results) => {
-    console.log('Первичная настройка таблиц');
-})
-    .then(() => connection.query(init).then(([result]) => {
-    //console.log(result);
-    let status = JSON.parse(JSON.stringify(result))[0].warningStatus;
-    if (!status) {
-        console.log("Таблицы созданы");
-        connection.query(insert).then((results) => {
-            console.log('Тестовые данные добавлены');
-        }).catch(err => {
-            console.log("Ошибка при заполнении таблиц\n", err);
-        });
-    }
-    else {
-        console.log("База данных подключена");
-    }
-}))
-    .catch(err => {
-    console.log("Ошибка при работе с базой данных\n", err);
-});
-exports.default = connection;
+let drop = (0, fs_1.readFileSync)(path_1.default.join(__dirname + "/../../../src/migrations/drop_tables.sql")).toString();
+let backup = (0, fs_1.readFileSync)(path_1.default.join(__dirname + "/../../../src/migrations/backup/" + NAME_DUMP)).toString();
+connection.query(drop).then(() => {
+    console.log('Таблицы удалены');
+}).then(() => connection.query(backup).then(() => {
+    console.log('Таблицы восстановлены');
+    connection.end();
+}));

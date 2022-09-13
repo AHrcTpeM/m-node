@@ -565,3 +565,11 @@ html, body {
 @media (min-width: 320px) and (max-width: 376px) {
   .container {
     width: 320px; } }
+
+input:invalid {
+  border: 2px dashed rgb(238, 116, 116);
+}
+
+textarea:invalid {
+  border: 2px dashed rgb(238, 116, 116);
+}

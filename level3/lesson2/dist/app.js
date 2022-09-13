@@ -5,7 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const express_basic_auth_1 = __importDefault(require("express-basic-auth"));
+const cron_schedule_1 = require("./migrations/cron_schedule");
 const router_1 = __importDefault(require("./router/router"));
+(0, cron_schedule_1.startCron)();
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
@@ -32,6 +34,9 @@ app.use('/admin', (0, express_basic_auth_1.default)({
     challenge: true // <--- needed to actually show the login dialog!
 }));
 app.use(router_1.default);
+app.use(function (req, res, next) {
+    res.status(404).send("Not Found");
+});
 app.listen(port, function () {
     console.log(`Server listens port: ${port}`);
 });
