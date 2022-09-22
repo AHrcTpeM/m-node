@@ -573,3 +573,40 @@ input:invalid {
 textarea:invalid {
   border: 2px dashed rgb(238, 116, 116);
 }
+
+#popup {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background-color: rgb(136, 136, 136, 0.6);
+  visibility: hidden;
+}
+
+#popup:target {
+  visibility: visible;
+}
+
+#popup2 {
+  position: fixed;
+  width: 40%;
+  height: 40%;
+  left: 50%;
+  top: 30%;
+  background-color: white;
+  min-width: 300px;
+  transform: translate(-50%, 0);
+}
+
+@media (max-width: 768px) {
+  .social{
+    transform: translate(-50%, 0);
+  }
+}
+@media (max-width: 576px) {
+  .social{
+    transform: translate(0, 0);
+    margin: 0 auto;
+  }
+}

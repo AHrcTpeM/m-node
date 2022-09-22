@@ -25,17 +25,6 @@ app.use('/admin', express.static('public/'));
 
 app.use(express.static('public/'));
 
-app.get("/111", (req, res) => {
-    res.send('Hello MVC khkh')
-});
-
-app.get("/about/:id", (req, res) => {
-    console.log(req.query);
-    console.log(req.params);
-
-    res.send('Hello about')
-});
-
 app.use('/admin', basicAuth({
   users: { admin: 'admin', admin1: 'admin1' },
   challenge: true // <--- needed to actually show the login dialog!
@@ -44,7 +33,7 @@ app.use('/admin', basicAuth({
 app.use(router);
 
 app.use(function (req, res, next) {
-  res.status(404).send("404 Not Found")
+  res.status(404).render('error');
 });
 
 app.listen(port, function () {

@@ -1,8 +1,9 @@
 import { Router, Request, Response } from 'express';
+import { body, validationResult } from 'express-validator';
 import multer from 'multer';
 import path from 'path';
 
-import { getAdmin, addBook, deleteBook } from '../controllers/admin';
+import { getAdmin, addBook, softDeleteBook, deleteBookByCron } from '../controllers/admin';
 import { getBook, getBooks, addClick } from '../controllers/books';
 
 const router = Router();
@@ -32,12 +33,23 @@ const uploader = multer({
 
 router.route('/admin')
 .get(getAdmin)
-.post(uploader.single('image'), addBook)
-// .post(uploader.single('image'), (req: Request, res: Response) => {
-//     console.log(req.headers.host);
-//     res.json({ uri: `${req.headers.host}/${req.file?.filename}`})
-// })
-.delete(deleteBook)
+.post(
+  uploader.single('image'),  
+  body('title').isLength({ min: 1 }),
+  body('author1').isLength({ min: 1 }),
+  body('pages').isLength({  min: 1 }).isNumeric(),
+  body('isbn').isLength({  min: 1 }),
+  body('year').isLength({ min: 4, max: 4 }).isNumeric(),
+  (req: Request, res: Response, next) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    next();
+  },
+  addBook
+)
+.patch(softDeleteBook);
 
 router.route('/')
 .get(getBooks)

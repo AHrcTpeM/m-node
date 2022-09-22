@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
+const express_validator_1 = require("express-validator");
 const multer_1 = __importDefault(require("multer"));
 const path_1 = __importDefault(require("path"));
 const admin_1 = require("../controllers/admin");
@@ -34,12 +35,14 @@ const uploader = (0, multer_1.default)({
 });
 router.route('/admin')
     .get(admin_1.getAdmin)
-    .post(uploader.single('image'), admin_1.addBook)
-    // .post(uploader.single('image'), (req: Request, res: Response) => {
-    //     console.log(req.headers.host);
-    //     res.json({ uri: `${req.headers.host}/${req.file?.filename}`})
-    // })
-    .delete(admin_1.deleteBook);
+    .post(uploader.single('image'), (0, express_validator_1.body)('title').isLength({ min: 1 }), (0, express_validator_1.body)('author1').isLength({ min: 1 }), (0, express_validator_1.body)('pages').isLength({ min: 1 }).isNumeric(), (0, express_validator_1.body)('isbn').isLength({ min: 1 }), (0, express_validator_1.body)('year').isLength({ min: 4, max: 4 }).isNumeric(), (req, res, next) => {
+    const errors = (0, express_validator_1.validationResult)(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    next();
+}, admin_1.addBook)
+    .patch(admin_1.softDeleteBook);
 router.route('/')
     .get(books_1.getBooks)
     .post((req, res) => {

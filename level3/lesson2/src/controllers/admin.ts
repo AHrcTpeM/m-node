@@ -44,7 +44,7 @@ export async function addBook(req: Request, res: Response) {
     //console.log(req.file?.filename);
     //console.log(req.headers.host);
     
-    let data = [req.body.author1, req.body.author2, req.body.author3, req.body.year, req.body.title, req.body.pages, req.body.isbn, req.file?.filename, req.body.author1, req.body.author2, req.body.author3];
+    let data = [req.body.author1, req.body.author2, req.body.author3, req.body.year, req.body.title, req.body.pages, req.body.isbn, req.file?.filename || 'images_may_del', req.body.author1, req.body.author2, req.body.author3];
 
     const sql = `
                 INSERT IGNORE INTO authors(author) VALUES (?);    
@@ -99,39 +99,62 @@ export async function addBook(req: Request, res: Response) {
 
 }
 
-export async function deleteBook(req: Request, res: Response) {
-    //console.log(req.body);
+export async function deleteBookByCron() {
+    const sql = `SELECT id FROM books WHERE deleted = 1;`
+    connection.query(sql).then(([result]) => {
+        let items:{id: number}[] = JSON.parse(JSON.stringify(result));
+        let arrayId = items.map(elem => elem.id)
+        //console.log(arrayId);
 
-    const data = [req.body.id, req.body.id]
-    const sql = `SELECT author_id FROM books_authors WHERE book_id = ?;
-                 SELECT image FROM books WHERE id = ?;`
+        const sql1 = `SELECT author_id FROM books_authors WHERE book_id IN ?;
+                 SELECT image FROM books WHERE id IN ?;`
 
-    connection.query(sql, data).then(([result]) => {
-        let image = JSON.parse(JSON.stringify(result))[1][0].image;
-        if (image.length > 10) {   // отсекаем начальные данные и undefined         
-            unlink(path.join(__dirname + `/../../public/images/${image}`), (err) => {
-                if (err) {
-                    console.error(err)
-                }})
-            console.log('-------Изображение удалено-------');
-        }
-
-        let items = JSON.parse(JSON.stringify(result))[0];
-        //console.log(result);
-        if (items) {
-            const data = [req.body.id, req.body.id, items[0].author_id, items[1]?.author_id || -1, items[2]?.author_id || -1];
-            const sql = `                
-                DELETE FROM books_authors WHERE book_id = ?;
-                DELETE FROM books WHERE id = ?;
-                DELETE IGNORE FROM authors WHERE id = ?;
-                DELETE IGNORE FROM authors WHERE id = ?;
-                DELETE IGNORE FROM authors WHERE id = ?;                        
-                `
-            return connection.query(sql, data);   
-        }        
-    })
+        return connection.query(sql1, [[arrayId], [arrayId]]).then(([result]) => {
+            //console.log(result);
+            let image: {image: string}[] = JSON.parse(JSON.stringify(result))[1];
+            let arrayImg = image.map(elem => elem.image);
+            //console.log(arrayImg);
+            arrayImg.forEach(image => {
+                if (image.length > 10) {   // отсекаем начальные данные и undefined         
+                    unlink(path.join(__dirname + `/../../public/images/${image}`), (err) => {
+                        if (err) {
+                            console.error(err)
+                        } else {
+                            console.log('-------Изображение удалено-------');
+                        }})                    
+                }
+            })
+            
+            let items: {author_id: number}[] = JSON.parse(JSON.stringify(result))[0];
+            let arrayAuthorId = items.map(elem => elem.author_id);
+            //console.log(arrayAuthorId);
+            if (items) {
+                const data = [[arrayId], [arrayId], [arrayAuthorId]];
+                const sql = `                
+                    DELETE FROM books_authors WHERE book_id IN ?;
+                    DELETE FROM books WHERE id IN ?;
+                    DELETE IGNORE FROM authors WHERE id IN ?;                      
+                    `
+                return connection.query(sql, data);   
+            }        
+        })
+    })    
     .then((result) => {
-        //console.log('Книга удалена');
+        //console.log(result);
+        console.log('Книги удалены');
+    })
+    .catch(err =>{
+        console.log(err);
+      });
+}
+
+export async function softDeleteBook(req: Request, res: Response) {    
+    const sql = `UPDATE books
+                 SET deleted = NOT deleted
+                 WHERE id = ?;`
+
+    connection.query(sql, req.body.id)
+    .then((result) => {
         res.json({status: 'OK'});
     })
     .catch(err =>{
@@ -140,3 +163,45 @@ export async function deleteBook(req: Request, res: Response) {
       });
     
 }
+
+// export async function deleteBook(req: Request, res: Response) {
+//     //console.log(req.body);
+
+//     const data = [req.body.id, req.body.id]
+//     const sql = `SELECT author_id FROM books_authors WHERE book_id = ?;
+//                  SELECT image FROM books WHERE id = ?;`
+
+//     connection.query(sql, data).then(([result]) => {
+//         let image = JSON.parse(JSON.stringify(result))[1][0].image;
+//         if (image.length > 10) {   // отсекаем начальные данные и undefined         
+//             unlink(path.join(__dirname + `/../../public/images/${image}`), (err) => {
+//                 if (err) {
+//                     console.error(err)
+//                 }})
+//             console.log('-------Изображение удалено-------');
+//         }
+
+//         let items = JSON.parse(JSON.stringify(result))[0];
+//         //console.log(result);
+//         if (items) {
+//             const data = [req.body.id, req.body.id, items[0].author_id, items[1]?.author_id || -1, items[2]?.author_id || -1];
+//             const sql = `                
+//                 DELETE FROM books_authors WHERE book_id = ?;
+//                 DELETE FROM books WHERE id = ?;
+//                 DELETE IGNORE FROM authors WHERE id = ?;
+//                 DELETE IGNORE FROM authors WHERE id = ?;
+//                 DELETE IGNORE FROM authors WHERE id = ?;                        
+//                 `
+//             return connection.query(sql, data);   
+//         }        
+//     })
+//     .then((result) => {
+//         //console.log('Книга удалена');
+//         res.json({status: 'OK'});
+//     })
+//     .catch(err =>{
+//         console.log(err);
+//         res.status(500).json({error: err});
+//       });
+    
+// }

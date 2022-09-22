@@ -17,9 +17,10 @@ const node_cron_1 = __importDefault(require("node-cron"));
 const mysqldump_1 = __importDefault(require("mysqldump"));
 const fs_1 = require("fs");
 require("dotenv/config");
+const admin_1 = require("../controllers/admin");
 const { MYSQL_USER, MYSQL_PASSWORD, MYSQL_PATH, MYSQL_SCHEMA } = process.env;
 function startCron() {
-    node_cron_1.default.schedule('*/10 * * * * *', () => __awaiter(this, void 0, void 0, function* () {
+    node_cron_1.default.schedule('30 22 * * *', () => __awaiter(this, void 0, void 0, function* () {
         let name = getDate() + '-dump.sql';
         (0, fs_1.writeFileSync)("src/migrations/backup/nameDump.txt", name); // запысываем имя последнего бэкап
         console.log('startDump', name);
@@ -34,6 +35,33 @@ function startCron() {
         });
         console.log("endDump");
     }));
+    node_cron_1.default.schedule('45 22 * * *', () => __awaiter(this, void 0, void 0, function* () {
+        (0, admin_1.deleteBookByCron)();
+        console.log('Cron performed the planned deletion');
+    }));
+    node_cron_1.default.schedule('30 23 * * *', () => {
+        const files = (0, fs_1.readdirSync)("src/migrations/backup");
+        //console.log(files);
+        files.forEach(file => {
+            if (file.length > 20) {
+                (0, fs_1.stat)(`src/migrations/backup/${file}`, (error, stats) => {
+                    if (error) {
+                        console.log(error);
+                    }
+                    //console.log(stats);
+                    //console.log(file, Date.now() - stats.birthtimeMs);
+                    if (Date.now() - stats.birthtimeMs > 24 * 60 * 60 * 1000) {
+                        (0, fs_1.unlink)(`src/migrations/backup/${file}`, (err) => {
+                            if (err) {
+                                console.error(err);
+                            }
+                        });
+                        console.log('-------Старый dump удален-------');
+                    }
+                });
+            }
+        });
+    });
 }
 exports.startCron = startCron;
 function getDate() {

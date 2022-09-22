@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `authors` (
   `author` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `author` (`author`)
-) ENGINE = InnoDB AUTO_INCREMENT = 91 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 103 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: books
@@ -30,8 +30,9 @@ CREATE TABLE IF NOT EXISTS `books` (
   `view` int DEFAULT '0',
   `click` int DEFAULT '0',
   `image` varchar(255) NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 64 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 68 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: books_authors
@@ -200,7 +201,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -209,9 +211,10 @@ VALUES
     2010,
     351,
     '978-3-16-148410-0',
+    3,
     1,
-    1,
-    '22.jpg'
+    '22.jpg',
+    0
   );
 INSERT INTO
   `books` (
@@ -222,7 +225,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -231,9 +235,10 @@ VALUES
     2015,
     300,
     '978-3-16-148410-0',
-    6,
+    7,
     1,
-    '23.jpg'
+    '23.jpg',
+    0
   );
 INSERT INTO
   `books` (
@@ -244,7 +249,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -253,9 +259,10 @@ VALUES
     2020,
     311,
     '402, 978-3-16-148410-0',
-    5,
-    2,
-    '25.jpg'
+    9,
+    4,
+    '25.jpg',
+    0
   );
 INSERT INTO
   `books` (
@@ -266,7 +273,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -275,9 +283,10 @@ VALUES
     2011,
     265,
     '978-3-16-148410-0',
-    0,
-    0,
-    '26.jpg'
+    93,
+    61,
+    '26.jpg',
+    0
   );
 INSERT INTO
   `books` (
@@ -288,7 +297,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -299,7 +309,8 @@ VALUES
     '978-3-16-148410-0',
     4,
     1,
-    '27.jpg'
+    '27.jpg',
+    0
   );
 INSERT INTO
   `books` (
@@ -310,7 +321,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -321,7 +333,8 @@ VALUES
     '978-3-16-148410-0',
     1,
     0,
-    '29.jpg'
+    '29.jpg',
+    0
   );
 INSERT INTO
   `books` (
@@ -332,7 +345,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -341,9 +355,10 @@ VALUES
     2014,
     352,
     '978-3-16-148410-0',
+    1,
     0,
-    0,
-    '31.jpg'
+    '31.jpg',
+    0
   );
 INSERT INTO
   `books` (
@@ -354,7 +369,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -365,7 +381,8 @@ VALUES
     '978-3-16-148410-0',
     0,
     0,
-    '32.jpg'
+    '32.jpg',
+    0
   );
 INSERT INTO
   `books` (
@@ -376,7 +393,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -387,7 +405,8 @@ VALUES
     '978-3-16-148410-0',
     1,
     2,
-    '33.jpg'
+    '33.jpg',
+    0
   );
 INSERT INTO
   `books` (
@@ -398,7 +417,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -409,7 +429,8 @@ VALUES
     '978-3-16-148410-0',
     1,
     0,
-    '34.jpg'
+    '34.jpg',
+    0
   );
 INSERT INTO
   `books` (
@@ -420,7 +441,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -429,9 +451,10 @@ VALUES
     2019,
     366,
     '978-3-16-148410-0',
-    0,
-    0,
-    '35.jpg'
+    1,
+    1,
+    '35.jpg',
+    0
   );
 INSERT INTO
   `books` (
@@ -442,7 +465,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -451,9 +475,10 @@ VALUES
     2012,
     374,
     '978-3-16-148410-0',
-    0,
-    0,
-    '36.jpg'
+    1,
+    1,
+    '36.jpg',
+    0
   );
 INSERT INTO
   `books` (
@@ -464,7 +489,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -475,7 +501,8 @@ VALUES
     '978-3-16-148410-0',
     0,
     0,
-    '37.jpg'
+    '37.jpg',
+    0
   );
 INSERT INTO
   `books` (
@@ -486,7 +513,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -497,7 +525,8 @@ VALUES
     '978-3-16-148410-0',
     0,
     0,
-    '38.jpg'
+    '38.jpg',
+    0
   );
 INSERT INTO
   `books` (
@@ -508,7 +537,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -519,7 +549,8 @@ VALUES
     '978-3-16-148410-0',
     0,
     0,
-    '39.jpg'
+    '39.jpg',
+    0
   );
 INSERT INTO
   `books` (
@@ -530,7 +561,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -541,7 +573,8 @@ VALUES
     '978-3-16-148410-0',
     0,
     0,
-    '40.jpg'
+    '40.jpg',
+    0
   );
 INSERT INTO
   `books` (
@@ -552,7 +585,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -563,7 +597,8 @@ VALUES
     '978-3-16-148410-0',
     1,
     0,
-    '41.jpg'
+    '41.jpg',
+    0
   );
 INSERT INTO
   `books` (
@@ -574,7 +609,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -585,7 +621,8 @@ VALUES
     '978-3-16-148410-0',
     1,
     0,
-    '42.jpg'
+    '42.jpg',
+    0
   );
 INSERT INTO
   `books` (
@@ -596,7 +633,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -607,7 +645,8 @@ VALUES
     '978-3-16-148410-0',
     0,
     0,
-    '43.jpg'
+    '43.jpg',
+    0
   );
 INSERT INTO
   `books` (
@@ -618,7 +657,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -629,7 +669,8 @@ VALUES
     '978-3-16-148410-0',
     0,
     0,
-    '44.jpg'
+    '44.jpg',
+    0
   );
 INSERT INTO
   `books` (
@@ -640,7 +681,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -651,7 +693,8 @@ VALUES
     '978-3-16-148410-0',
     0,
     0,
-    '45.jpg'
+    '45.jpg',
+    0
   );
 INSERT INTO
   `books` (
@@ -662,7 +705,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -673,7 +717,8 @@ VALUES
     '978-3-16-148410-0',
     4,
     1,
-    '46.jpg'
+    '46.jpg',
+    0
   );
 INSERT INTO
   `books` (
@@ -684,7 +729,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -695,7 +741,8 @@ VALUES
     '978-3-16-148410-0',
     0,
     0,
-    '47.jpg'
+    '47.jpg',
+    0
   );
 INSERT INTO
   `books` (
@@ -706,7 +753,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -717,7 +765,8 @@ VALUES
     '978-3-16-148410-0',
     0,
     0,
-    '48.jpg'
+    '48.jpg',
+    0
   );
 INSERT INTO
   `books` (
@@ -728,10 +777,21 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
-  (54, 'fdg', 2015, 100, 'hh', 1, 1, 'img-sj2xo5lzn4e.png');
+  (
+    54,
+    'fdg',
+    2015,
+    100,
+    'hh',
+    1,
+    1,
+    'img-sj2xo5lzn4e.png',
+    0
+  );
 INSERT INTO
   `books` (
     `id`,
@@ -741,7 +801,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -752,7 +813,8 @@ VALUES
     '12',
     0,
     0,
-    'img-msus4dgm0nn.png'
+    'img-msus4dgm0nn.png',
+    0
   );
 INSERT INTO
   `books` (
@@ -763,7 +825,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -772,9 +835,10 @@ VALUES
     2020,
     100,
     '11',
-    1,
+    2,
     0,
-    'img-nvtf8jz56ik.jpeg'
+    'img-nvtf8jz56ik.jpeg',
+    0
   );
 INSERT INTO
   `books` (
@@ -785,7 +849,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -796,7 +861,8 @@ VALUES
     '225-00',
     1,
     1,
-    'img-9w7cspu7m7.jpeg'
+    'img-9w7cspu7m7.jpeg',
+    0
   );
 INSERT INTO
   `books` (
@@ -807,7 +873,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -818,7 +885,8 @@ VALUES
     '11',
     3,
     4,
-    'img-5xazhsk9528.png'
+    'img-5xazhsk9528.png',
+    0
   );
 INSERT INTO
   `books` (
@@ -829,7 +897,8 @@ INSERT INTO
     `isbn`,
     `view`,
     `click`,
-    `image`
+    `image`,
+    `deleted`
   )
 VALUES
   (
@@ -840,8 +909,95 @@ VALUES
     '12',
     0,
     0,
-    'img-9r9o9x0c73w.jpeg'
+    'img-9r9o9x0c73w.jpeg',
+    0
   );
+INSERT INTO
+  `books` (
+    `id`,
+    `title`,
+    `year`,
+    `pages`,
+    `isbn`,
+    `view`,
+    `click`,
+    `image`,
+    `deleted`
+  )
+VALUES
+  (
+    64,
+    'Сборник книг',
+    2020,
+    100,
+    '22',
+    0,
+    0,
+    'img-3kau4w1fe5h.jpeg',
+    0
+  );
+INSERT INTO
+  `books` (
+    `id`,
+    `title`,
+    `year`,
+    `pages`,
+    `isbn`,
+    `view`,
+    `click`,
+    `image`,
+    `deleted`
+  )
+VALUES
+  (
+    65,
+    'Опять читать?',
+    2020,
+    200,
+    '12',
+    0,
+    0,
+    'img-s0c3yvqxt3f.jpeg',
+    0
+  );
+INSERT INTO
+  `books` (
+    `id`,
+    `title`,
+    `year`,
+    `pages`,
+    `isbn`,
+    `view`,
+    `click`,
+    `image`,
+    `deleted`
+  )
+VALUES
+  (
+    66,
+    'jjj',
+    2020,
+    100,
+    '12',
+    1,
+    0,
+    'img-hn7gb0exy8o.jpeg',
+    0
+  );
+INSERT INTO
+  `books` (
+    `id`,
+    `title`,
+    `year`,
+    `pages`,
+    `isbn`,
+    `view`,
+    `click`,
+    `image`,
+    `deleted`
+  )
+VALUES
+  (67, 'hh', 11, 100, '12', 0, 0, 'img-3k17uzq1wir.jpeg', 0);
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: books_authors
@@ -854,7 +1010,15 @@ VALUES
 INSERT INTO
   `books_authors` (`book_id`, `author_id`)
 VALUES
+  (64, 2);
+INSERT INTO
+  `books_authors` (`book_id`, `author_id`)
+VALUES
   (25, 3);
+INSERT INTO
+  `books_authors` (`book_id`, `author_id`)
+VALUES
+  (64, 3);
 INSERT INTO
   `books_authors` (`book_id`, `author_id`)
 VALUES
@@ -863,6 +1027,10 @@ INSERT INTO
   `books_authors` (`book_id`, `author_id`)
 VALUES
   (27, 5);
+INSERT INTO
+  `books_authors` (`book_id`, `author_id`)
+VALUES
+  (65, 5);
 INSERT INTO
   `books_authors` (`book_id`, `author_id`)
 VALUES
@@ -879,6 +1047,14 @@ INSERT INTO
   `books_authors` (`book_id`, `author_id`)
 VALUES
   (33, 9);
+INSERT INTO
+  `books_authors` (`book_id`, `author_id`)
+VALUES
+  (66, 9);
+INSERT INTO
+  `books_authors` (`book_id`, `author_id`)
+VALUES
+  (67, 9);
 INSERT INTO
   `books_authors` (`book_id`, `author_id`)
 VALUES
@@ -919,6 +1095,10 @@ INSERT INTO
   `books_authors` (`book_id`, `author_id`)
 VALUES
   (43, 19);
+INSERT INTO
+  `books_authors` (`book_id`, `author_id`)
+VALUES
+  (64, 19);
 INSERT INTO
   `books_authors` (`book_id`, `author_id`)
 VALUES

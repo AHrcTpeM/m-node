@@ -48,7 +48,7 @@
                             <button type="button" class="btnBookID btn-lg btn btn-success" onclick="wantBook()">Хочу читать!</button>
                         </div>
                         <div class="bookDescription col-xs-12 col-sm-12 col-md-12 hidden-xs hidden-sm">
-                            <h4>О книге</h4>
+                            <a href="#popup" style="text-decoration: none;"><h4>О книге</h4></a>
                             <hr>
                             <p id="description"><%= book.title%></p>
                         </div>
@@ -64,6 +64,23 @@
         </div>
     </section>
     <%- include('./partials/footer', {team: 'HolaTeam*'}) %>
+
+    <div id="popup">
+        <div id="popup2" class="container">
+            <img src="./images/okey.png" alt="" style="position: relative; width: 15%; left: 42.5%; top: 10%;">
+            <h3 style="text-align: center;padding-top: 10px;">Отлично!</h3>
+            <div style="text-align: center; line-height: 15px; font-size: 14px;">
+                Книга свободна и ты можешь прийти за ней.
+                Наш адрес: г. Кропивницкий, переулок Васильевский 10, 5 этаж.
+                Лучше предварительно прозвонить и предупредить нас, чтоб
+                не попасть в неловкую ситуацию. Тел. 099 196 24 69
+            </div> <br> 
+            <div style="display: flex; justify-content: center;">
+                <button type="button" class="btn btn-primary" onclick="closeModelWindow()">Ok!</button>
+            </div>        
+        </div>
+    </div>
+       
 
     <div class="sweet-overlay" tabindex="-1" style="opacity: -0.04; display: none;"></div>
     <div class="sweet-alert hideSweetAlert" data-custom-class="" data-has-cancel-button="false" data-has-confirm-button="true" data-allow-outside-click="false" data-has-done-function="false" data-animation="pop" data-timer="null" style="display: none; margin-top: -169px; opacity: -0.04;">
@@ -105,6 +122,9 @@
         </div>
     </div>
     <script>
+        const popup1 = document.querySelector("#popup");
+        const popup2 = document.querySelector("#popup2");
+
         function wantBook() {
             const request = JSON.stringify({id: '<%= book.book_id%>'});
             //console.log(request);
@@ -119,14 +139,22 @@
               .then(res => res.json())
               .then((json) => {
                   console.log('это там', json);
-              });     
-            alert(
-            "Книга свободна и ты можешь прийти за ней." +
-            " Наш адрес: г. Кропивницкий, переулок Васильевский 10, 5 этаж." +
-            " Лучше предварительно прозвонить и предупредить нас, чтоб " +
-            " не попасть в неловкую ситуацию. Тел. 099 196 24 69"
-            );
+              });
+            popup1.style = "visibility: visible;"
+            popup2.style = "visibility: visible;"
+            // alert(
+            // "Книга свободна и ты можешь прийти за ней." +
+            // " Наш адрес: г. Кропивницкий, переулок Васильевский 10, 5 этаж." +
+            // " Лучше предварительно прозвонить и предупредить нас, чтоб " +
+            // " не попасть в неловкую ситуацию. Тел. 099 196 24 69"
+            // );
         }
+
+        function closeModelWindow() {            
+            popup1.style = "visibility: hidden;"
+            popup2.style = "visibility: hidden;"
+        }
+
     </script>
 </body>
 

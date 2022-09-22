@@ -6,7 +6,8 @@ CREATE TABLE if not exists books(
     isbn VARCHAR(255) NOT NULL,
     view INT DEFAULT 0,
     click INT DEFAULT 0,
-    image VARCHAR(255) NOT NULL
+    image VARCHAR(255) NOT NULL,
+    deleted BOOLEAN DEFAULT 0
     );
 
 CREATE TABLE if not exists authors(

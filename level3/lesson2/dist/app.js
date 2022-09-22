@@ -21,21 +21,13 @@ app.use('/', express_1.default.static('public/'));
 app.use('/book/:id', express_1.default.static('public/'));
 app.use('/admin', express_1.default.static('public/'));
 app.use(express_1.default.static('public/'));
-app.get("/111", (req, res) => {
-    res.send('Hello MVC khkh');
-});
-app.get("/about/:id", (req, res) => {
-    console.log(req.query);
-    console.log(req.params);
-    res.send('Hello about');
-});
 app.use('/admin', (0, express_basic_auth_1.default)({
     users: { admin: 'admin', admin1: 'admin1' },
     challenge: true // <--- needed to actually show the login dialog!
 }));
 app.use(router_1.default);
 app.use(function (req, res, next) {
-    res.status(404).send("Not Found");
+    res.status(404).render('error');
 });
 app.listen(port, function () {
     console.log(`Server listens port: ${port}`);

@@ -40,9 +40,13 @@ export async function getBook(req: Request, res: Response) {
     WHERE book_id=?;`
 
     connection.query(sql, data).then(([result]) => {
-        let items: MyBooks[] = JSON.parse(JSON.stringify(result))[1][0];
-        //console.log(items);    
-        res.render('book', {book: items})
+        let items: MyBooks = JSON.parse(JSON.stringify(result))[1][0];
+        //console.log(items);
+        if (items.id) {
+            res.render('book', {book: items});
+        } else {
+            res.status(404).render('error');
+        }   
     }).catch(err =>{
         console.log(err);
         res.status(500).json({error: err});
@@ -61,5 +65,4 @@ export async function addClick(req: Request, res: Response) {
         console.log(err);
         res.status(500).json({error: err});
       });
-
 }

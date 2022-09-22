@@ -72,7 +72,9 @@
                                     </td>
                                     <td><%=books[i].authors%></td>
                                     <td><%=books[i].year%></td>
-                                    <td><a id="<%=books[i].book_id%>" href="" onclick="deleteBook(event)">удалить</a></td>
+                                    <td><a id="<%=books[i].book_id%>" href="" onclick="deleteBook(event)">
+                                      <% const text_var = books[i].deleted === 0 ? 'удалить' : 'востановить' %> 
+                                      <%=text_var%></a></td>
                                     <td><%=books[i].view%> / <%=books[i].click%></td>
                                   </tr>
                             <% } %>
@@ -129,7 +131,7 @@
                             <input name="title" type="text" class="form-control" placeholder="название книги" required>
                           </div>
                           <div class="col">
-                            <input name="author1" type="text" class="form-control" placeholder="автор1" required>
+                            <input name="author1" type="text" class="form-control" placeholder="автор1" list="authors" required>
                           </div>
                         </div>
                         <div class="row" style="margin: 10px;">
@@ -137,7 +139,7 @@
                               <input name="year" type="number" class="form-control" placeholder="год издания" required>
                             </div>
                             <div class="col">
-                              <input name="author2" type="text" class="form-control" placeholder="автор2">
+                              <input name="author2" type="text" class="form-control" placeholder="автор2" list="authors">
                             </div>
                         </div>
                         <div class="row" style="margin: 10px;">
@@ -145,7 +147,7 @@
                                 <input name="pages" type="text" class="form-control" placeholder="кол. страниц" required pattern="\d\d\d?\d?">
                             </div>
                             <div class="col">
-                                <input name="author3" type="text" class="form-control" placeholder="автор3">
+                                <input name="author3" type="text" class="form-control" placeholder="автор3" list="authors">
                             </div>
                         </div>
                         <div class="row" style="margin: 10px;">
@@ -167,8 +169,20 @@
                         <div style="margin: 20px;">
                             <button type="submit" class="btn btn-success" id="mybutton">Добавить</button>
                             <span style="float: right;">*оставьте поля пустыми если авторов меньше 3</span>
-                            
                         </div>                        
+                        
+                        <datalist id="authors">
+                          <% 
+                          let array = [];
+                          books.forEach(item => {
+                            if (!array.includes(item.author)) {
+                              array.push(item.author) %>
+
+                              <option value="<%=item.author%>">
+
+                          <% }}) %>
+                        </datalist>                        
+                        
                       </form>
                 </div>
             </div>
@@ -210,10 +224,14 @@
 
       function deleteBook(event) {
         event.preventDefault();
+        
         //console.log(event.target.id);
+        const newText = document.getElementById(event.target.id);
+        newText.innerText = newText.innerText === 'удалить' ? 'востановить' : 'удалить';
+        
         const request = JSON.stringify({id: event.target.id});
         fetch('http://localhost:3000/admin', {
-                  method:'DELETE',
+                  method:'PATCH',
                   body: request,
                   credentials: 'include',
                   headers: {
@@ -223,15 +241,15 @@
               .then(res => res.json())
               .then((json) => {
                   let querySearch = '<%=querySearch%>'.replace('amp;', '');                 
-                  window.location.href = `/admin/?page=<%= +page %>${querySearch}`;
+                  //window.location.href = `/admin/?page=<%= +page %>${querySearch}`;
                   //console.log('это тут', json);
               });              
       }
       
       document.getElementById('exampleFormControlFile1').addEventListener('change', handleFileSelect, false);
-      function handleFileSelect(evt) {
-        //console.log(evt);
-        let file = evt.target.files; // FileList object
+      function handleFileSelect(event) {
+        //console.log(event);
+        let file = event.target.files; // FileList object
         let f = file[0];
         //console.log(f);
         // Only process image files.

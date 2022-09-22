@@ -53,8 +53,13 @@ function getBook(req, res) {
     WHERE book_id=?;`;
         connect_bd_1.default.query(sql, data).then(([result]) => {
             let items = JSON.parse(JSON.stringify(result))[1][0];
-            //console.log(items);    
-            res.render('book', { book: items });
+            //console.log(items);
+            if (items.id) {
+                res.render('book', { book: items });
+            }
+            else {
+                res.status(404).render('error');
+            }
         }).catch(err => {
             console.log(err);
             res.status(500).json({ error: err });
