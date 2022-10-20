@@ -1,0 +1,37 @@
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody, ApiQuery, ApiConsumes, ApiProperty } from '@nestjs/swagger';
+import { FilmsService } from './films.service';
+import { CreateFilmDto } from './dto/create-film.dto';
+import { UpdateFilmDto } from './dto/update-film.dto';
+import { Films } from './entities/film.entity';
+
+@ApiTags('films')
+@Controller('films')
+export class FilmsController {
+  constructor(private readonly filmsService: FilmsService) {}
+
+  @Post()
+  create(@Body() createFilmDto: CreateFilmDto): Promise<Films> {
+    return this.filmsService.create(createFilmDto);
+  }
+
+  @Get()
+  findAll(): Promise<Films[]> {
+    return this.filmsService.findAll();
+  }
+
+  @Get(':title')
+  findOne(@Param('title') title: string): Promise<Films> {
+    return this.filmsService.findOne(title);
+  }
+
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateFilmDto: UpdateFilmDto) {
+  //   return this.filmsService.update(+id, updateFilmDto);
+  // }
+
+  @Delete(':title')
+  remove(@Param('title') title: string): Promise<void> {
+    return this.filmsService.remove(title);
+  }
+}

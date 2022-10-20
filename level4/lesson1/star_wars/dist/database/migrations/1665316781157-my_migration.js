@@ -1,0 +1,26 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.myMigration1665316781157 = void 0;
+class myMigration1665316781157 {
+    constructor() {
+        this.name = 'myMigration1665316781157';
+    }
+    async up(queryRunner) {
+        await queryRunner.query(`CREATE TABLE \`film\` (\`title\` varchar(255) NOT NULL, \`episode_id\` int NOT NULL, \`opening_crawl\` varchar(255) NOT NULL, \`director\` varchar(255) NOT NULL, \`producer\` varchar(255) NOT NULL, \`release_date\` datetime NOT NULL, \`species\` text NOT NULL, \`starships\` text NOT NULL, \`vehicles\` text NOT NULL, \`characters\` text NOT NULL, \`planets\` text NOT NULL, \`url\` varchar(255) NOT NULL DEFAULT 'true', \`created\` varchar(255) NOT NULL DEFAULT 'true', \`edited\` varchar(255) NOT NULL DEFAULT 'true', PRIMARY KEY (\`title\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`people\` (\`name\` varchar(255) NOT NULL, \`height\` varchar(255) NOT NULL, \`mass\` varchar(255) NOT NULL, \`hair_color\` varchar(255) NOT NULL, \`skin_color\` varchar(255) NOT NULL, \`eye_color\` varchar(255) NOT NULL, \`birth_year\` varchar(255) NOT NULL, \`gender\` varchar(255) NOT NULL, \`homeworld\` varchar(255) NOT NULL DEFAULT 'true', \`films\` text NOT NULL, \`species\` text NOT NULL, \`vehicles\` text NOT NULL, \`starships\` text NOT NULL, \`created\` varchar(255) NOT NULL DEFAULT 'true', \`edited\` varchar(255) NOT NULL DEFAULT 'true', \`url\` varchar(255) NOT NULL DEFAULT 'true', \`image\` text NOT NULL, PRIMARY KEY (\`name\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`planet\` (\`name\` varchar(255) NOT NULL, \`diameter\` varchar(255) NOT NULL, \`rotation_period\` varchar(255) NOT NULL, \`orbital_period\` varchar(255) NOT NULL, \`gravity\` varchar(255) NOT NULL, \`population\` varchar(255) NOT NULL, \`climate\` varchar(255) NOT NULL, \`terrain\` varchar(255) NOT NULL, \`surface_water\` varchar(255) NOT NULL DEFAULT 'true', \`films\` text NOT NULL, \`residents\` text NOT NULL, \`created\` varchar(255) NOT NULL DEFAULT 'true', \`edited\` varchar(255) NOT NULL DEFAULT 'true', \`url\` varchar(255) NOT NULL DEFAULT 'true', PRIMARY KEY (\`name\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`species\` (\`name\` varchar(255) NOT NULL, \`classification\` varchar(255) NOT NULL, \`designation\` varchar(255) NOT NULL, \`average_height\` varchar(255) NOT NULL, \`average_lifespan\` varchar(255) NOT NULL, \`eye_color\` varchar(255) NOT NULL, \`hair_colors\` varchar(255) NOT NULL, \`skin_colors\` varchar(255) NOT NULL, \`language\` varchar(255) NOT NULL DEFAULT 'true', \`homeworld\` varchar(255) NOT NULL DEFAULT 'true', \`people\` text NOT NULL, \`films\` text NOT NULL, \`created\` varchar(255) NOT NULL DEFAULT 'true', \`edited\` varchar(255) NOT NULL DEFAULT 'true', \`url\` varchar(255) NOT NULL DEFAULT 'true', PRIMARY KEY (\`name\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`starship\` (\`name\` varchar(255) NOT NULL, \`model\` varchar(255) NOT NULL, \`starship_class\` varchar(255) NOT NULL, \`manufacturer\` varchar(255) NOT NULL, \`cost_in_credits\` varchar(255) NOT NULL, \`length\` varchar(255) NOT NULL, \`crew\` varchar(255) NOT NULL, \`passengers\` varchar(255) NOT NULL, \`max_atmosphering_speed\` varchar(255) NOT NULL DEFAULT 'true', \`hyperdrive_rating\` varchar(255) NOT NULL DEFAULT 'true', \`MGLT\` varchar(255) NOT NULL DEFAULT 'true', \`cargo_capacity\` varchar(255) NOT NULL DEFAULT 'true', \`consumables\` varchar(255) NOT NULL DEFAULT 'true', \`films\` text NOT NULL, \`pilots\` text NOT NULL, \`created\` varchar(255) NOT NULL DEFAULT 'true', \`edited\` varchar(255) NOT NULL DEFAULT 'true', \`url\` varchar(255) NOT NULL DEFAULT 'true', PRIMARY KEY (\`name\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`vehicle\` (\`name\` varchar(255) NOT NULL, \`model\` varchar(255) NOT NULL, \`vehicle_class\` varchar(255) NOT NULL, \`manufacturer\` varchar(255) NOT NULL, \`length\` varchar(255) NOT NULL, \`cost_in_credits\` varchar(255) NOT NULL, \`crew\` varchar(255) NOT NULL, \`passengers\` varchar(255) NOT NULL, \`max_atmosphering_speed\` varchar(255) NOT NULL DEFAULT 'true', \`cargo_capacity\` varchar(255) NOT NULL DEFAULT 'true', \`consumables\` varchar(255) NOT NULL DEFAULT 'true', \`films\` text NOT NULL, \`pilots\` text NOT NULL, \`created\` varchar(255) NOT NULL DEFAULT 'true', \`edited\` varchar(255) NOT NULL DEFAULT 'true', \`url\` varchar(255) NOT NULL DEFAULT 'true', PRIMARY KEY (\`name\`)) ENGINE=InnoDB`);
+    }
+    async down(queryRunner) {
+        await queryRunner.query(`DROP TABLE \`vehicle\``);
+        await queryRunner.query(`DROP TABLE \`starship\``);
+        await queryRunner.query(`DROP TABLE \`species\``);
+        await queryRunner.query(`DROP TABLE \`planet\``);
+        await queryRunner.query(`DROP TABLE \`people\``);
+        await queryRunner.query(`DROP TABLE \`film\``);
+    }
+}
+exports.myMigration1665316781157 = myMigration1665316781157;
+//# sourceMappingURL=1665316781157-my_migration.js.map
