@@ -13,7 +13,7 @@ AWS_SECRET_KEY=MNDI0Q
 AWS_REGION=eu-central-1  
 AWS_BUCKET_NAME=bucket    
 
-npm install
+npm install  
 npm run seed - синхронизация включена, поэтому сразу создадуться таблицы в базе данных и начнут заполнятся данными из swapi.  
 npm run start - заходим на http://localhost:3000/api, тестируем
 
