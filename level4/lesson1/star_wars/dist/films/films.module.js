@@ -17,11 +17,12 @@ const starships_module_1 = require("./../starships/starships.module");
 const planets_module_1 = require("./../planets/planets.module");
 const species_module_1 = require("./../species/species.module");
 const vehicles_module_1 = require("./../vehicles/vehicles.module");
+const images_module_1 = require("../images/images.module");
 let FilmsModule = class FilmsModule {
 };
 FilmsModule = __decorate([
     (0, common_1.Module)({
-        imports: [(0, common_1.forwardRef)(() => people_module_1.PeopleModule), starships_module_1.StarshipsModule, planets_module_1.PlanetsModule, species_module_1.SpeciesModule, vehicles_module_1.VehiclesModule, typeorm_1.TypeOrmModule.forFeature([film_entity_1.Films])],
+        imports: [(0, common_1.forwardRef)(() => people_module_1.PeopleModule), (0, common_1.forwardRef)(() => starships_module_1.StarshipsModule), (0, common_1.forwardRef)(() => planets_module_1.PlanetsModule), (0, common_1.forwardRef)(() => species_module_1.SpeciesModule), (0, common_1.forwardRef)(() => vehicles_module_1.VehiclesModule), (0, common_1.forwardRef)(() => images_module_1.ImagesModule), typeorm_1.TypeOrmModule.forFeature([film_entity_1.Films])],
         exports: [typeorm_1.TypeOrmModule],
         controllers: [films_controller_1.FilmsController],
         providers: [films_service_1.FilmsService]

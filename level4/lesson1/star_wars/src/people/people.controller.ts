@@ -17,7 +17,7 @@ import { ValidationPipeMy } from './interceptor/validation.pipe';
 
 
 //@UseInterceptors(new TransformInterceptor()) // включен глобальный useGlobalInterceptors
-@ApiBearerAuth()
+//@ApiBearerAuth()
 @ApiTags('people')
 @Controller('people')
 export class PeopleController {
@@ -33,8 +33,6 @@ export class PeopleController {
     }
     
     @Get()
-    @Roles(Role.Admin)
-    @UseGuards(JwtAuthGuard, RolesGuard)
     @ApiOperation({ summary: 'Find all' })
     @ApiQuery({
       name: 'page',
@@ -59,6 +57,7 @@ export class PeopleController {
   
     @Delete(':name')
     @ApiOperation({ summary: 'Remove one people' })
+    @ApiParam({ name: "name", example: "Luke Skywalke", description: 'The name of this person' }) 
     remove(@Param('name') name: string): Promise<{ name: string; deleted: string; }> {
       return this.peopleService.remove(name);
     }
@@ -101,7 +100,6 @@ export class PeopleController {
       required: false
     })
     deleteImage(@Param('name') name: string, @Query('image', new DefaultValuePipe(''), new ValidationPipeMy('local')) image: string): Promise<{ name: string; deleted: string; }> {
-      console.log('image', image);
       return this.peopleService.deleteImage(name, image);
     }
 

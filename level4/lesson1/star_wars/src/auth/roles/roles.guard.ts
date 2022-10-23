@@ -12,7 +12,7 @@ export class RolesGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
-    console.log(requiredRoles);
+    //console.log(requiredRoles);
     if (!requiredRoles) {
       return true;
     }
@@ -20,7 +20,7 @@ export class RolesGuard implements CanActivate {
     if (!user) {
         throw new HttpException("Forbidden resource", HttpStatus.FORBIDDEN)
     }
-    console.log(1, user);
+    //console.log(1, user);
     return requiredRoles.some((role) => user.roles?.includes(role));
   }
 }

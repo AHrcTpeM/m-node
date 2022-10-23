@@ -16,14 +16,16 @@ let HttpExceptionFilter = class HttpExceptionFilter {
         const request = ctx.getRequest();
         const status = exception.getStatus();
         const message = exception.getResponse();
-        response
-            .status(status)
-            .json({
+        let sendObj = {
             statusCode: status,
             message: exception.message,
             timestamp: new Date().toISOString(),
             path: request.url,
-        });
+        };
+        if (message['message'] !== exception.message) {
+            sendObj = Object.assign(Object.assign({}, sendObj), { note: message['message'] });
+        }
+        response.status(status).json(sendObj);
     }
 };
 HttpExceptionFilter = __decorate([

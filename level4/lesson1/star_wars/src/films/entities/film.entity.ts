@@ -62,7 +62,8 @@ export class Films {
   @ApiProperty({ example: "https://localhost:3000/api/films/1/", description: 'the hypermedia URL of this resource' })
   url: string;
 
-  @OneToMany(() => Images, (images) => images.films)
+  @OneToMany(() => Images, (images) => images.films, { 
+    eager: false })
   @ApiProperty({ example: ["http://localhost:3000/img-io9at1aivg.jpeg"], description: 'An array of images resource URLs that are in this film' })
   images: Images[];
 

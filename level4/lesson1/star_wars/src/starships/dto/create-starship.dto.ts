@@ -48,6 +48,6 @@ export class CreateStarshipDto {
   @ApiProperty({ example: ["https://localhost:3000/api/people/13/"], description: 'An array of People URL Resources that this starship has been piloted by' })
   pilots: string[];
   
-  @ApiProperty({ example: "https://localhost:3000/api/people/1/", description: 'the hypermedia URL of this resource' })
+  @ApiProperty({ example: "https://localhost:3000/api/starships/1/", description: 'the hypermedia URL of this resource' })
   url: string;
 }

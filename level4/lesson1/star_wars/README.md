@@ -15,7 +15,9 @@ AWS_BUCKET_NAME=bucket
 
 npm install  
 npm run seed - синхронизация включена, поэтому сразу создадуться таблицы в базе данных и начнут заполнятся данными из swapi.  
-npm run start - заходим на http://localhost:3000/api, тестируем
+npm run start - заходим на http://localhost:3000/api, тестируем  
+
+admin=admin
 
 миграции:  
 отключаем synchronize: false в app.module.ts, все несовпадения схем в базе данных и entities будут фиксироваться в миграциях  
@@ -23,7 +25,7 @@ npm run migration:generate - создаем миграцию
 npm run migration:run - запускаем ВСЕ файлы миграции  
 npm run migration:revert - делаем откат ОДНОЙ миграции  
 
-
+многие вещи - типа неактивные импорты, закомменченный код, оставлены специально в учебных целях, что бы попадали на глаза и напоминали о себе
 
 ## My Description
 npm install --save @nestjs/typeorm typeorm mysql2

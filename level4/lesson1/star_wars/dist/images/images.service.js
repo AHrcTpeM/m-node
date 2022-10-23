@@ -45,7 +45,7 @@ let ImagesService = class ImagesService {
     }
     async uploadFile(entity, fileUploadDto, target) {
         const prop = entity === 'films' ? 'title' : 'name';
-        const people = await this.resources[entity].findOneBy({ [prop]: fileUploadDto.name })
+        const obj = await this.resources[entity].findOneBy({ [prop]: fileUploadDto.name })
             .then((result) => {
             if (result) {
                 return result;
@@ -57,7 +57,7 @@ let ImagesService = class ImagesService {
         for (let i = 0; i < fileUploadDto.images.length; i++) {
             let images = new image_entity_1.Images();
             images.url = fileUploadDto.images[i];
-            images.people = people;
+            images[entity] = obj;
             await this.imagesRepository.save(images);
         }
         return await this.resources[entity].findOne({

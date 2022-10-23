@@ -19,9 +19,9 @@ export class CreateFilmDto {
   @ApiProperty({ example: "Gary Kurtz, Rick McCallum", description: 'The name(s) of the producer(s) of this film. Comma separated' })
   producer: string;
   
-  @IsDate()
+  //@IsDate()
   @ApiProperty({ example: "1977-05-25", description: 'The ISO 8601 date format of film release at original creator country' })
-  release_date: Date;
+  release_date: string;
   
   @ApiProperty({ example: ["https://localhost:3000/api/species/2/"], description: 'An array of species resource URLs that are in this film' })
   species: string[];

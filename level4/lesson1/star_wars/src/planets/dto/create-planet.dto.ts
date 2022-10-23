@@ -36,6 +36,6 @@ export class CreatePlanetDto {
   @ApiProperty({ example: ["https://localhost:3000/api/people/1/"], description: 'An array of People URL Resources that live on this planet' })
   residents: string[];
   
-  @ApiProperty({ example: "https://localhost:3000/api/people/1/", description: 'the hypermedia URL of this resource' })
+  @ApiProperty({ example: "https://localhost:3000/api/planets/1/", description: 'the hypermedia URL of this resource' })
   url: string;
 }

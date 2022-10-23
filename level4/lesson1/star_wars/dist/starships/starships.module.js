@@ -12,11 +12,17 @@ const typeorm_1 = require("@nestjs/typeorm");
 const starships_service_1 = require("./starships.service");
 const starships_controller_1 = require("./starships.controller");
 const starship_entity_1 = require("./entities/starship.entity");
+const planets_module_1 = require("../planets/planets.module");
+const people_module_1 = require("../people/people.module");
+const films_module_1 = require("../films/films.module");
+const species_module_1 = require("../species/species.module");
+const vehicles_module_1 = require("../vehicles/vehicles.module");
+const images_module_1 = require("../images/images.module");
 let StarshipsModule = class StarshipsModule {
 };
 StarshipsModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([starship_entity_1.Starships])],
+        imports: [(0, common_1.forwardRef)(() => people_module_1.PeopleModule), (0, common_1.forwardRef)(() => films_module_1.FilmsModule), (0, common_1.forwardRef)(() => planets_module_1.PlanetsModule), (0, common_1.forwardRef)(() => species_module_1.SpeciesModule), (0, common_1.forwardRef)(() => vehicles_module_1.VehiclesModule), (0, common_1.forwardRef)(() => images_module_1.ImagesModule), typeorm_1.TypeOrmModule.forFeature([starship_entity_1.Starships])],
         exports: [typeorm_1.TypeOrmModule],
         controllers: [starships_controller_1.StarshipsController],
         providers: [starships_service_1.StarshipsService]

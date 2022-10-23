@@ -51,8 +51,8 @@ export class Vehicles {
   consumables: string;
 
   //@Column("simple-array")
-  @ManyToMany((type) => Films, (films) => films.vehicles
-  // , { eager: true}
+  @ManyToMany((type) => Films, (films) => films.vehicles, { 
+    eager: false }
   )
   @JoinTable({
     joinColumn: {
@@ -67,7 +67,7 @@ export class Vehicles {
 
   //@Column("simple-array")
   @ManyToMany((type) => People, (people) => people.vehicles, {
-    eager: true
+    eager: false
   })
   @JoinTable({
     joinColumn: {
@@ -81,10 +81,11 @@ export class Vehicles {
   pilots: People[];
 
   @Column({ default: 'true', unique: true })
-  @ApiProperty({ example: "https://localhost:3000/api/people/1/", description: 'the hypermedia URL of this resource' })
+  @ApiProperty({ example: "https://localhost:3000/api/vehicles/1/", description: 'the hypermedia URL of this resource' })
   url: string;
 
-  @OneToMany(() => Images, (images) => images.films)
+  @OneToMany(() => Images, (images) => images.vehicles, { 
+    eager: false })
   @ApiProperty({ example: ["http://localhost:3000/img-io9at1aivg.jpeg"], description: 'An array of images resource URLs that are in this planet' })
   images: Images[];
 

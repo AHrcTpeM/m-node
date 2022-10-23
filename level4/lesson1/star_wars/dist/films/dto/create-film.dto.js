@@ -37,9 +37,8 @@ __decorate([
     __metadata("design:type", String)
 ], CreateFilmDto.prototype, "producer", void 0);
 __decorate([
-    (0, class_validator_1.IsDate)(),
     (0, swagger_1.ApiProperty)({ example: "1977-05-25", description: 'The ISO 8601 date format of film release at original creator country' }),
-    __metadata("design:type", Date)
+    __metadata("design:type", String)
 ], CreateFilmDto.prototype, "release_date", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: ["https://localhost:3000/api/species/2/"], description: 'An array of species resource URLs that are in this film' }),

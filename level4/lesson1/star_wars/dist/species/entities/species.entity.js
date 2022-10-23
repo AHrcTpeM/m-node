@@ -95,11 +95,13 @@ __decorate([
 ], Species.prototype, "films", void 0);
 __decorate([
     (0, typeorm_1.Column)({ default: 'true', unique: true }),
-    (0, swagger_1.ApiProperty)({ example: "https://localhost:3000/api/people/1/", description: 'the hypermedia URL of this resource' }),
+    (0, swagger_1.ApiProperty)({ example: "https://localhost:3000/api/species/1/", description: 'the hypermedia URL of this resource' }),
     __metadata("design:type", String)
 ], Species.prototype, "url", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => image_entity_1.Images, (images) => images.films),
+    (0, typeorm_1.OneToMany)(() => image_entity_1.Images, (images) => images.species, {
+        eager: false
+    }),
     (0, swagger_1.ApiProperty)({ example: ["http://localhost:3000/img-io9at1aivg.jpeg"], description: 'An array of images resource URLs that are in this planet' }),
     __metadata("design:type", Array)
 ], Species.prototype, "images", void 0);

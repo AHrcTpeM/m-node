@@ -60,7 +60,7 @@ __decorate([
     __metadata("design:type", Array)
 ], CreatePlanetDto.prototype, "residents", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: "https://localhost:3000/api/people/1/", description: 'the hypermedia URL of this resource' }),
+    (0, swagger_1.ApiProperty)({ example: "https://localhost:3000/api/planets/1/", description: 'the hypermedia URL of this resource' }),
     __metadata("design:type", String)
 ], CreatePlanetDto.prototype, "url", void 0);
 exports.CreatePlanetDto = CreatePlanetDto;

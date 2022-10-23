@@ -39,6 +39,6 @@ export class CreateSpeciesDto {
   @ApiProperty({ example: ["https://localhost:3000/api/films/1/", "https://localhost:3000/api/films/2/"], description: 'An array of Film URL Resources that this species has appeared in'})
   films: string[];
   
-  @ApiProperty({ example: "https://localhost:3000/api/people/1/", description: 'the hypermedia URL of this resource' })
+  @ApiProperty({ example: "https://localhost:3000/api/species/1/", description: 'the hypermedia URL of this resource' })
   url: string;
 }

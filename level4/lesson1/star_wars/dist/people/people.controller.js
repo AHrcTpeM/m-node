@@ -21,10 +21,6 @@ const people_entity_1 = require("./entities/people.entity");
 const people_service_1 = require("./people.service");
 const create_image_dto_1 = require("../images/dto/create-image.dto");
 const options_1 = require("../common/options");
-const roles_decorator_1 = require("../auth/roles/roles.decorator");
-const role_enum_1 = require("../auth/roles//role.enum");
-const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
-const roles_guard_1 = require("../auth/roles/roles.guard");
 const validation_pipe_1 = require("./interceptor/validation.pipe");
 let PeopleController = class PeopleController {
     constructor(peopleService) {
@@ -50,7 +46,6 @@ let PeopleController = class PeopleController {
         return this.peopleService.uploadFile(updateUserDto);
     }
     deleteImage(name, image) {
-        console.log('image', image);
         return this.peopleService.deleteImage(name, image);
     }
     uploadFileS3(file, fileUploadDto) {
@@ -72,8 +67,6 @@ __decorate([
 ], PeopleController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    (0, roles_decorator_1.Roles)(role_enum_1.Role.Admin),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, swagger_1.ApiOperation)({ summary: 'Find all' }),
     (0, swagger_1.ApiQuery)({
         name: 'page',
@@ -102,6 +95,7 @@ __decorate([
 __decorate([
     (0, common_1.Delete)(':name'),
     (0, swagger_1.ApiOperation)({ summary: 'Remove one people' }),
+    (0, swagger_1.ApiParam)({ name: "name", example: "Luke Skywalke", description: 'The name of this person' }),
     __param(0, (0, common_1.Param)('name')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -177,7 +171,6 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], PeopleController.prototype, "deleteFileS3", null);
 PeopleController = __decorate([
-    (0, swagger_1.ApiBearerAuth)(),
     (0, swagger_1.ApiTags)('people'),
     (0, common_1.Controller)('people'),
     __metadata("design:paramtypes", [people_service_1.PeopleService])

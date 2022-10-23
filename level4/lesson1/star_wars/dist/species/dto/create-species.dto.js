@@ -64,7 +64,7 @@ __decorate([
     __metadata("design:type", Array)
 ], CreateSpeciesDto.prototype, "films", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: "https://localhost:3000/api/people/1/", description: 'the hypermedia URL of this resource' }),
+    (0, swagger_1.ApiProperty)({ example: "https://localhost:3000/api/species/1/", description: 'the hypermedia URL of this resource' }),
     __metadata("design:type", String)
 ], CreateSpeciesDto.prototype, "url", void 0);
 exports.CreateSpeciesDto = CreateSpeciesDto;

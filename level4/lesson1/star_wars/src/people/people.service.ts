@@ -62,7 +62,9 @@ export class PeopleService {
     // people.planets = [];
     // people.species = [];
     // people.vehicles = [];
-    await this.peopleRepository.save(people); // обнуляем связи, что бы не было ошибки дублирования внешних ключей
+    await this.peopleRepository.save(people).catch((err) => {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }); // обнуляем связи, что бы не было ошибки дублирования внешних ключей
 
     for (let i = 0; i < this.propsRelations.length - 1; i++) {
       createPeopleDto[this.propsRelations[i]]?.forEach(async (elem) => {        
@@ -87,7 +89,9 @@ export class PeopleService {
     // for (let j = 0; j < createPeopleDto.vehicles?.length || 0; j++) {
     //   people.vehicles.push(await this.vehiclesRepository.findOneBy({ url: createPeopleDto.vehicles[j] }));
     // }     
-    return this.peopleRepository.save(people);
+    return this.peopleRepository.save(people).catch((err) => {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    });
   }
 
   async findAll(page: number): Promise<PeoplePaginate> {
@@ -183,16 +187,5 @@ export class PeopleService {
 
   async deleteFileS3(name: string, key: string) {
     return await this.imagesService.deleteFileS3('people', name, key);
-
-    // const s3 = new S3();
-    // const y = await s3.getObject({
-    //   Bucket: process.env.AWS_BUCKET_NAME,
-    //   Key: key
-    // }).promise();
-    // const x = await s3.deleteObject({
-    //   Bucket: process.env.AWS_BUCKET_NAME,
-    //   Key: key
-    // }).promise();
-    // return 'success';
   }
 }

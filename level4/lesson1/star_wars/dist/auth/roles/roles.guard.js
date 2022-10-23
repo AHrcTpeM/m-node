@@ -22,7 +22,6 @@ let RolesGuard = class RolesGuard {
             context.getHandler(),
             context.getClass(),
         ]);
-        console.log(requiredRoles);
         if (!requiredRoles) {
             return true;
         }
@@ -30,7 +29,6 @@ let RolesGuard = class RolesGuard {
         if (!user) {
             throw new common_1.HttpException("Forbidden resource", common_1.HttpStatus.FORBIDDEN);
         }
-        console.log(1, user);
         return requiredRoles.some((role) => { var _a; return (_a = user.roles) === null || _a === void 0 ? void 0 : _a.includes(role); });
     }
 };

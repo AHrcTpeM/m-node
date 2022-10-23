@@ -14,7 +14,7 @@ import { ImagesModule } from '../images/images.module';
 import { RolesGuard } from '../auth/roles/roles.guard';
 
 @Module({  
-  imports: [forwardRef(() => FilmsModule), StarshipsModule, PlanetsModule, SpeciesModule, VehiclesModule, ImagesModule,  TypeOrmModule.forFeature([People])],
+  imports: [forwardRef(() => FilmsModule), forwardRef(() => StarshipsModule), forwardRef(() => PlanetsModule), forwardRef(() => SpeciesModule), forwardRef(() => VehiclesModule), forwardRef(() => ImagesModule), TypeOrmModule.forFeature([People])],
   exports: [TypeOrmModule],
   controllers: [PeopleController],
   providers: [PeopleService,

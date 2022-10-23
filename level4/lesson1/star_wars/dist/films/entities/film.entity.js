@@ -81,7 +81,9 @@ __decorate([
     __metadata("design:type", String)
 ], Films.prototype, "url", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => image_entity_1.Images, (images) => images.films),
+    (0, typeorm_1.OneToMany)(() => image_entity_1.Images, (images) => images.films, {
+        eager: false
+    }),
     (0, swagger_1.ApiProperty)({ example: ["http://localhost:3000/img-io9at1aivg.jpeg"], description: 'An array of images resource URLs that are in this film' }),
     __metadata("design:type", Array)
 ], Films.prototype, "images", void 0);

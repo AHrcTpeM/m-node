@@ -69,10 +69,11 @@ export class Planets {
   residents: People[];
 
   @Column({ default: 'true', unique: true })
-  @ApiProperty({ example: "https://localhost:3000/api/people/1/", description: 'the hypermedia URL of this resource' })
+  @ApiProperty({ example: "https://localhost:3000/api/planets/1/", description: 'the hypermedia URL of this resource' })
   url: string;
 
-  @OneToMany(() => Images, (images) => images.films)
+  @OneToMany(() => Images, (images) => images.planets, { 
+    eager: false })
   @ApiProperty({ example: ["http://localhost:3000/img-io9at1aivg.jpeg"], description: 'An array of images resource URLs that are in this planet' })
   images: Images[];
 

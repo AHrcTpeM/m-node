@@ -51,7 +51,7 @@ export class ImagesService {
     
     async uploadFile<T>(entity: string, fileUploadDto: FileUploadDto, target: EntityTarget<T>): Promise<T> {
     const prop = entity === 'films' ? 'title' : 'name';
-    const people = await this.resources[entity].findOneBy({ [prop]: fileUploadDto.name })
+    const obj = await this.resources[entity].findOneBy({ [prop]: fileUploadDto.name })
     .then((result) => {
         if (result) {
         return result;
@@ -62,7 +62,7 @@ export class ImagesService {
     for (let i = 0; i < fileUploadDto.images.length; i++ ) {
         let images = new Images();
         images.url = fileUploadDto.images[i];
-        images.people = people;
+        images[entity] = obj;
         await this.imagesRepository.save(images);
     }
     return await this.resources[entity].findOne({ 
@@ -95,7 +95,7 @@ export class ImagesService {
         user.images = image ? 
                       user.images.filter(elem => elem.url !== image) :
                       user.images.filter(elem => elem.url.includes('https:')); // если есть картинка оставляем все кроме нее, если нет, оставляем только амазоновские адреса https, их удаляем по одной
-        await this.resources[entity].save(user);    
+        await this.resources[entity].save(user);
         return {name, deleted: error};
       }
       

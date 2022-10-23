@@ -22,7 +22,7 @@ let PeopleModule = class PeopleModule {
 };
 PeopleModule = __decorate([
     (0, common_1.Module)({
-        imports: [(0, common_1.forwardRef)(() => films_module_1.FilmsModule), starships_module_1.StarshipsModule, planets_module_1.PlanetsModule, species_module_1.SpeciesModule, vehicles_module_1.VehiclesModule, images_module_1.ImagesModule, typeorm_1.TypeOrmModule.forFeature([people_entity_1.People])],
+        imports: [(0, common_1.forwardRef)(() => films_module_1.FilmsModule), (0, common_1.forwardRef)(() => starships_module_1.StarshipsModule), (0, common_1.forwardRef)(() => planets_module_1.PlanetsModule), (0, common_1.forwardRef)(() => species_module_1.SpeciesModule), (0, common_1.forwardRef)(() => vehicles_module_1.VehiclesModule), (0, common_1.forwardRef)(() => images_module_1.ImagesModule), typeorm_1.TypeOrmModule.forFeature([people_entity_1.People])],
         exports: [typeorm_1.TypeOrmModule],
         controllers: [people_controller_1.PeopleController],
         providers: [people_service_1.PeopleService,

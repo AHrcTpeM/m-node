@@ -48,7 +48,9 @@ let PeopleService = class PeopleService {
                 continue;
             people[key] = this.propsRelations.includes(key) ? [] : createPeopleDto[key];
         }
-        await this.peopleRepository.save(people);
+        await this.peopleRepository.save(people).catch((err) => {
+            throw new common_1.HttpException(err.message, common_1.HttpStatus.BAD_REQUEST);
+        });
         for (let i = 0; i < this.propsRelations.length - 1; i++) {
             (_a = createPeopleDto[this.propsRelations[i]]) === null || _a === void 0 ? void 0 : _a.forEach(async (elem) => {
                 const person = await resources[i].findOneBy({ url: elem });
@@ -57,7 +59,9 @@ let PeopleService = class PeopleService {
                 }
             });
         }
-        return this.peopleRepository.save(people);
+        return this.peopleRepository.save(people).catch((err) => {
+            throw new common_1.HttpException(err.message, common_1.HttpStatus.BAD_REQUEST);
+        });
     }
     async findAll(page) {
         const numPage = page < 1 ? 1 : page;

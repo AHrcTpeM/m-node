@@ -11,14 +11,25 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const status = exception.getStatus();
     const message = exception.getResponse();
 
-    response
-      .status(status)
-      .json({
-        statusCode: status,
-        //note: message['message'],
-        message: exception.message,
-        timestamp: new Date().toISOString(),
-        path: request.url,
-      });
+    let sendObj: {
+      statusCode: number;
+      message: string;
+      timestamp: string;
+      path: string;
+      note?: string;
+    } = {
+      statusCode: status,
+      message: exception.message,
+      timestamp: new Date().toISOString(),
+      path: request.url,
+    }
+    if (message['message'] !== exception.message) {
+      sendObj = {
+        ...sendObj,
+        note: message['message']
+      }
+    }   
+
+    response.status(status).json(sendObj);
   }
 }

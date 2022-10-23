@@ -11,7 +11,7 @@ import { VehiclesModule } from './../vehicles/vehicles.module';
 import { PeopleModule } from '../people/people.module';
 
 @Module({
-  imports: [forwardRef(() => FilmsModule), forwardRef(() => PeopleModule), StarshipsModule, PlanetsModule, SpeciesModule, VehiclesModule, ImagesModule, 
+  imports: [forwardRef(() => FilmsModule), forwardRef(() => PeopleModule), forwardRef(() => StarshipsModule), forwardRef(() => PlanetsModule), forwardRef(() => SpeciesModule), forwardRef(() => VehiclesModule), 
   TypeOrmModule.forFeature([Images])],
   exports: [TypeOrmModule, ImagesService],
   controllers: [ImagesController],
