@@ -40,7 +40,6 @@ export class PlanetsService {
     await this.planetRepository.save(planets).catch((err) => {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }); // обнуляем связи, что бы не было ошибки дублирования внешних ключей
-
     for (let i = 0; i < this.propsRelations.length - 1; i++) {
       createplanetsDto[this.propsRelations[i]]?.forEach(async (elem) => {        
         const person = await resources[i].findOneBy({ url: elem });
@@ -77,19 +76,16 @@ export class PlanetsService {
       where: { name }
     })
     .then(person => {
+      if (person) {
         let planets: CreatePlanetDto = new CreatePlanetDto();
         for (let key in person) {
           planets[key] = this.propsRelations.includes(key) && person[key] ? person[key].map((elem) => elem.url) : person[key];
         }
         return planets;
-    })
-    .then((result) => {
-      if (result) {
-        return result;
       } else {
         throw new HttpException("Person not found", HttpStatus.NOT_FOUND);
-      }
-    });
+      }        
+    })
   }
 
   async remove(name: string): Promise<{ name: string; deleted: string; }> {
@@ -97,10 +93,10 @@ export class PlanetsService {
       relations: ['images'],
       relationLoadStrategy: 'query',
       where: { name }
-    });
-    this.imagesService.deleteFiles(person.images.map((img) => img.url));       
+    });           
 
     if (person) {
+      this.imagesService.deleteFiles(person.images.map((img) => img.url));
       this.propsRelations.forEach((obj) => person[obj] = []);
       await this.planetRepository.save(person); // зануляем все связи ManyToMany и сохраняем, произойдет их удаление
     }

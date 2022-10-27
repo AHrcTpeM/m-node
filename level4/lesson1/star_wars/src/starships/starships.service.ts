@@ -77,19 +77,16 @@ export class StarshipsService {
       where: { name }
     })
     .then(person => {
+      if (person) {
         let starships: CreateStarshipDto = new CreateStarshipDto();
         for (let key in person) {
           starships[key] = this.propsRelations.includes(key) && person[key] ? person[key].map((elem) => elem.url) : person[key];
         }
         return starships;
-    })
-    .then((result) => {
-      if (result) {
-        return result;
       } else {
         throw new HttpException("Person not found", HttpStatus.NOT_FOUND);
-      }
-    });
+      }        
+    })
   }
 
   async remove(name: string): Promise<{ name: string; deleted: string; }> {
@@ -97,10 +94,10 @@ export class StarshipsService {
       relations: ['images'],
       relationLoadStrategy: 'query',
       where: { name }
-    });
-    this.imagesService.deleteFiles(person.images.map((img) => img.url));       
+    });           
 
     if (person) {
+      this.imagesService.deleteFiles(person.images.map((img) => img.url));
       this.propsRelations.forEach((obj) => person[obj] = []);
       await this.starshipsRepository.save(person); // зануляем все связи ManyToMany и сохраняем, произойдет их удаление
     }

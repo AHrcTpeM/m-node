@@ -89,19 +89,16 @@ export class FilmsService {
       where: { title: name }
     })
     .then(person => {
+      if (person) {
         let films: CreateFilmDto = new CreateFilmDto();
         for (let key in person) {
           films[key] = this.propsRelations.includes(key) && person[key] ? person[key].map((elem) => elem.url) : person[key];
         }
         return films;
-    })
-    .then((result) => {
-      if (result) {
-        return result;
       } else {
         throw new HttpException("Person not found", HttpStatus.NOT_FOUND);
-      }
-    });
+      }        
+    })
   }
 
   async remove(name: string): Promise<{ name: string; deleted: string; }> {
@@ -109,10 +106,10 @@ export class FilmsService {
       relations: ['images'],
       relationLoadStrategy: 'query',
       where: { title: name }
-    });
-    this.imagesService.deleteFiles(person.images.map((img) => img.url));       
+    });          
 
     if (person) {
+      this.imagesService.deleteFiles(person.images.map((img) => img.url)); 
       this.propsRelations.forEach((obj) => person[obj] = []);
       await this.filmsRepository.save(person); // зануляем все связи ManyToMany и сохраняем, произойдет их удаление
     }

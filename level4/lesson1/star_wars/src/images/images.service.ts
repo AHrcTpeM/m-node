@@ -54,9 +54,9 @@ export class ImagesService {
     const obj = await this.resources[entity].findOneBy({ [prop]: fileUploadDto.name })
     .then((result) => {
         if (result) {
-        return result;
+          return result;
         } else {
-        throw new HttpException("Person not found", HttpStatus.NOT_FOUND);
+          throw new HttpException("Person not found", HttpStatus.NOT_FOUND);
         }
     })
     for (let i = 0; i < fileUploadDto.images.length; i++ ) {
@@ -72,7 +72,7 @@ export class ImagesService {
         });
     }
     
-    async deleteImage(entity: string, name: string, image?: string) {        
+    async deleteImage(entity: string, name: string, image?: string) {  
         const prop = entity === 'films' ? 'title' : 'name';
         const user = await this.resources[entity].findOne({ 
           relations: ['images'],
@@ -94,7 +94,7 @@ export class ImagesService {
         let error = this.deleteFiles(deletedImage);
         user.images = image ? 
                       user.images.filter(elem => elem.url !== image) :
-                      user.images.filter(elem => elem.url.includes('https:')); // если есть картинка оставляем все кроме нее, если нет, оставляем только амазоновские адреса https, их удаляем по одной
+                      user.images.filter(elem => elem.url?.includes('https:')); // если есть картинка оставляем все кроме нее, если нет, оставляем только амазоновские адреса https, их удаляем по одной
         await this.resources[entity].save(user);
         return {name, deleted: error};
       }

@@ -40,9 +40,6 @@ export class PeopleService {
     @InjectRepository(Vehicles)
     private readonly vehiclesRepository: Repository<Vehicles>,
 
-    @InjectRepository(Images)
-    private readonly imagesRepository: Repository<Images>,
-
     private readonly imagesService: ImagesService
   ) {
     this.propsRelations = ['films', 'species', 'starships', 'vehicles', 'planets', 'images'];
@@ -129,19 +126,16 @@ export class PeopleService {
       where: { name }
     })
     .then(person => {
-        let people: CreatePeopleDto = new CreatePeopleDto();
-        for (let key in person) {
-          people[key] = this.propsRelations.includes(key) && person[key] ? person[key].map((elem) => elem.url) : person[key];
-        }
-        return people;
+        if (person) {
+          let people: CreatePeopleDto = new CreatePeopleDto();
+          for (let key in person) {
+            people[key] = this.propsRelations.includes(key) && person[key] ? person[key].map((elem) => elem.url) : person[key];
+          }
+          return people;
+        } else {
+          throw new HttpException("Person not found", HttpStatus.NOT_FOUND);
+        }        
     })
-    .then((result) => {
-      if (result) {
-        return result;
-      } else {
-        throw new HttpException("Person not found", HttpStatus.NOT_FOUND);
-      }
-    });
   }
 
   async remove(name: string): Promise<{ name: string; deleted: string; }> {
@@ -150,9 +144,8 @@ export class PeopleService {
       relationLoadStrategy: 'query',
       where: { name }
     });
-    this.imagesService.deleteFiles(person.images.map((img) => img.url));       
-
     if (person) {
+      this.imagesService.deleteFiles(person.images.map((img) => img.url)); 
       this.propsRelations.forEach((obj) => person[obj] = []);
       await this.peopleRepository.save(person); // зануляем все связи ManyToMany и сохраняем, произойдет их удаление
     }
