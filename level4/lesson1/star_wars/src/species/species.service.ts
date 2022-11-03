@@ -71,10 +71,11 @@ export class SpeciesService {
   }
 
   async findOne(name: string): Promise<CreateSpeciesDto> {
+    const url =  `http://${process.env.HOST}:${process.env.PORT}/species/${+name}/`;
     return this.speciesRepository.findOne({ 
       relations: this.propsRelations,
       relationLoadStrategy: 'query',
-      where: { name }
+      where: [{ name }, { url }]
     })
     .then(person => {
       if (person) {

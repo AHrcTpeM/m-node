@@ -83,10 +83,11 @@ export class FilmsService {
   }
 
   async findOne(name: string): Promise<CreateFilmDto> {
+    const url =  `http://${process.env.HOST}:${process.env.PORT}/films/${+name}/`;
     return this.filmsRepository.findOne({ 
       relations: this.propsRelations,
       relationLoadStrategy: 'query',
-      where: { title: name }
+      where: [{ title: name }, { url }]
     })
     .then(person => {
       if (person) {

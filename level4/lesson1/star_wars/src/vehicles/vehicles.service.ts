@@ -71,10 +71,11 @@ export class VehiclesService {
   }
 
   async findOne(name: string): Promise<CreateVehicleDto> {
+    const url =  `http://${process.env.HOST}:${process.env.PORT}/vehicles/${+name}/`;
     return this.vehiclesRepository.findOne({ 
       relations: this.propsRelations,
       relationLoadStrategy: 'query',
-      where: { name }
+      where: [{ name }, { url }]
     })
     .then(person => {
       if (person) {

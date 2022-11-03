@@ -53,7 +53,7 @@ export class CreatePeopleDto {
   // @ApiProperty({ example: "2014-12-20T21:17:56.891000Z", description: 'the ISO 8601 date format of the time that this resource was edited' })
   // edited: string;
   
-  @ApiProperty({ example: "https://localhost:3000/api/people/1/", description: 'the hypermedia URL of this resource' })
+  @ApiProperty({ example: "http://localhost:3000/people/1/", description: 'the hypermedia URL of this resource' })
   url: string;
   
   // @ApiProperty({ example: [], description: 'image of this resource' })

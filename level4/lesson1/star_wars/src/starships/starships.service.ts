@@ -71,10 +71,11 @@ export class StarshipsService {
   }
 
   async findOne(name: string): Promise<CreateStarshipDto> {
+    const url =  `http://${process.env.HOST}:${process.env.PORT}/starships/${+name}/`;
     return this.starshipsRepository.findOne({ 
       relations: this.propsRelations,
       relationLoadStrategy: 'query',
-      where: { name }
+      where: [{ name }, { url }]
     })
     .then(person => {
       if (person) {

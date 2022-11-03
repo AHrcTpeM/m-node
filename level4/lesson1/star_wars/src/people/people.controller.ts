@@ -1,6 +1,9 @@
-import { Controller, Post, Get, Header, Delete, Param, Body, Query, ParseIntPipe, HttpStatus, DefaultValuePipe, ValidationPipe, UseInterceptors, UploadedFiles, UploadedFile, StreamableFile, UseGuards  } from '@nestjs/common';
+import { Controller, Post, Get, Header, Delete, Param, Body, Query, ParseIntPipe, HttpStatus, DefaultValuePipe, ValidationPipe, UseInterceptors, UploadedFiles, UploadedFile, StreamableFile, UseGuards, Res  } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody, ApiQuery, ApiConsumes, ApiParam } from '@nestjs/swagger';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { createReadStream } from 'fs';
+import { join } from 'path';
+import type { Response } from 'express';
 
 import { CreatePeopleDto } from './dto/create-people.dto';
 import { People } from './entities/people.entity';
@@ -62,12 +65,12 @@ export class PeopleController {
       return this.peopleService.remove(name);
     }
 
-    @Get('file/download:image')
+    @Get('file/download/:image')
     @Header('Content-Type', 'image/jpeg')
     @Header('Content-Disposition', 'attachment; filename="image.jpeg"')
     getStaticFile(@Param('image') image: string): StreamableFile {      
       return this.peopleService.streamImage(image);
-    }  
+    }
 
     @Post('file/upload')
     @ApiOperation({ summary: 'File upload in local storage' })

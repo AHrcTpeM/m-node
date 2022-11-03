@@ -38,7 +38,7 @@ export class CreateFilmDto {
   @ApiProperty({ example: ["https://localhost:3000/api/planets/1/"], description: 'An array of planet resource URLs that are in this film' })
   planets: string[];
   
-  @ApiProperty({ example: "https://localhost:3000/api/films/1/", description: 'the hypermedia URL of this resource' })
+  @ApiProperty({ example: "http://localhost:3000/films/1/", description: 'the hypermedia URL of this resource' })
   url: string;
   
   // @ApiProperty({ example: "2014-12-10T14:23:31.880000Z", description: 'the ISO 8601 date format of the time that this resource was created'})

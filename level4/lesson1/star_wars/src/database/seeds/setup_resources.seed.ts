@@ -67,9 +67,9 @@ async function addData<T>(dataSource: DataSource, target: EntityTarget<T>) {
 function replaceURLinEntity(element) {
     for (let key in element) {
         element[key] = Array.isArray(element[key]) ? 
-                       element[key].map((e) => e.replace('swapi.dev', `${process.env.HOST}:${process.env.PORT}`)) : 
+                       element[key].map((e) => e.replace('https://swapi.dev/api', `http://${process.env.HOST}:${process.env.PORT}`)) : 
                            typeof element[key] === 'string' ? 
-                           element[key].replace('swapi.dev', `${process.env.HOST}:${process.env.PORT}`) : 
+                           element[key].replace('https://swapi.dev/api', `http://${process.env.HOST}:${process.env.PORT}`) : 
                            element[key]
     }
 }

@@ -15,6 +15,7 @@ import { Vehicles } from './../vehicles/entities/vehicle.entity';
 import { FileUploadDto } from '../images/dto/create-image.dto';
 import { Images } from '../images/entities/image.entity';
 import { ImagesService } from '../images/images.service';
+import { type } from 'os';
 
 
 @Injectable()
@@ -120,10 +121,11 @@ export class PeopleService {
   }
 
   findOne(name: string): Promise<CreatePeopleDto> {
+    const url =  `http://${process.env.HOST}:${process.env.PORT}/people/${+name}/`;
     return this.peopleRepository.findOne({ 
       relations: this.propsRelations,
       relationLoadStrategy: 'query',
-      where: { name }
+      where: [{ name }, { url }]
     })
     .then(person => {
         if (person) {
@@ -170,7 +172,7 @@ export class PeopleService {
   }
 
   streamImage(image: string): StreamableFile {
-    const file = createReadStream(join(process.cwd(), `files/${image}`));
+    const file = createReadStream(join(process.cwd(), `files/${image}`)); // работает без Interceptor { data: users }
     return new StreamableFile(file);
   }
 

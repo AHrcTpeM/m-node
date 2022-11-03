@@ -70,10 +70,11 @@ export class PlanetsService {
   }
 
   async findOne(name: string): Promise<CreatePlanetDto> {
+    const url =  `http://${process.env.HOST}:${process.env.PORT}/planets/${+name}/`;
     return this.planetRepository.findOne({ 
       relations: this.propsRelations,
       relationLoadStrategy: 'query',
-      where: { name }
+      where: [{ name }, { url }]
     })
     .then(person => {
       if (person) {

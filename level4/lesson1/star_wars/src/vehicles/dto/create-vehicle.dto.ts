@@ -42,6 +42,6 @@ export class CreateVehicleDto {
     @ApiProperty({ example: ["https://localhost:3000/api/people/2/"], description: 'An array of People URL Resources that this vehicle has been piloted by' })
     pilots: string[];
     
-    @ApiProperty({ example: "https://localhost:3000/api/vehicles/1/", description: 'the hypermedia URL of this resource' })
+    @ApiProperty({ example: "http://localhost:3000/vehicles/1/", description: 'the hypermedia URL of this resource' })
     url: string;
 }
