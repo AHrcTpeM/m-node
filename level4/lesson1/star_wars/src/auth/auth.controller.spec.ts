@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateUsersDto } from '../users/dto/create-users.dto';
-import { UserPassword } from '../people/interfaces/interface';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
@@ -32,7 +31,7 @@ describe('AuthController', () => {
   });
 
   it("calling login method", () => {
-    const req = new UserPassword();
+    const req = new CreateUsersDto();
     controller.login(req);
     expect(spyService.login).toHaveBeenCalled();
   })

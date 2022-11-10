@@ -11,6 +11,7 @@ import { Vehicles } from '../vehicles/entities/vehicle.entity';
 import { FileUploadDto } from './dto/create-image.dto';
 import { Images } from './entities/image.entity';
 import { ImagesService } from './images.service';
+import { ConfigService } from '@nestjs/config';
 
 class RepositoryFake {
     public create(): void {}
@@ -43,7 +44,7 @@ beforeEach(async () => {
     }
 
     const module: TestingModule = await Test.createTestingModule({
-        providers: [ ImagesService,
+        providers: [ ImagesService, ConfigService,
               {
                 provide: getRepositoryToken(Films),
                 useClass: RepositoryFake,

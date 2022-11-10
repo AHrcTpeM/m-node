@@ -94,7 +94,7 @@ describe('PeopleService', () => {
     expect(await service.create(dto)).toEqual(people);
     expect(createSpy).toHaveBeenCalledWith(dto);
     expect(peopleRepositorySaveSpy).toHaveBeenCalledTimes(2);
-    expect(peopleRepositorySaveSpy).toHaveBeenCalledWith(dto);
+    expect(peopleRepositorySaveSpy).toHaveBeenCalledWith({...dto, "homeworld": null});
   });
 
   it('should call findOne method with expected param', async () => {

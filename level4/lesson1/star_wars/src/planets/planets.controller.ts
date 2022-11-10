@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Body, Param, Delete, UseGuards, UseInterceptors, UploadedFiles, Query, DefaultValuePipe, UploadedFile, ValidationPipe } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiOperation, ApiConsumes, ApiBody, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Param, Delete, UseGuards, UseInterceptors, UploadedFiles, Query, DefaultValuePipe, UploadedFile, ValidationPipe, ClassSerializerInterceptor, ParseIntPipe } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiConsumes, ApiBody, ApiParam, ApiQuery, ApiResponse, ApiExtraModels, getSchemaPath, OmitType } from '@nestjs/swagger';
+import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { PlanetsService } from './planets.service';
 import { CreatePlanetDto } from './dto/create-planet.dto';
@@ -17,6 +18,8 @@ import { Role } from '../auth/roles/role.enum';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiTags('planets')
 @Controller('planets')
+@ApiExtraModels(Planets) 
+@UseInterceptors(ClassSerializerInterceptor)
 export class PlanetsController {
   constructor(private readonly planetsService: PlanetsService) {}
 
@@ -24,14 +27,19 @@ export class PlanetsController {
   @Roles(Role.Admin)
   @ApiBody({ type: CreatePlanetDto })
   @ApiOperation({ summary: 'Create planet or update person by name' })
+  @ApiResponse({ status: 201, description: 'OK', schema: {$ref: getSchemaPath(Planets)}})
   create(@Body(new ValidationPipe()) createPlanetDto: CreatePlanetDto): Promise<Planets> {
     return this.planetsService.create(createPlanetDto);
   }
   
   @Get()
   @ApiOperation({ summary: 'Find all' })
-  findAll(): Promise<CreatePlanetDto[]> {
-    return this.planetsService.findAll();
+  @ApiResponse({status: 200, type: Planets})
+  findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+  ): Promise<Pagination<Planets>> {
+    return this.planetsService.findAll({ page, limit });
   }
   
   @Get(':name')
@@ -63,6 +71,7 @@ export class PlanetsController {
     description: 'Image of planets',
     type: FilesUploadDto,
   })
+  @ApiResponse({status: 201, type: OmitType(Planets, ["residents", "films"])}) 
   uploadFile(@UploadedFiles() files: Array<Express.Multer.File>,
   @Body() updateUserDto: FilesUploadDto): Promise<Planets> {
     updateUserDto.images = files.map(elem => `http://${process.env.HOST}:${process.env.PORT}/` + elem.filename);
@@ -89,6 +98,7 @@ export class PlanetsController {
     description: 'Image of planet',
     type: FileUploadDto,
   })
+  @ApiResponse({status: 201, type: OmitType(Planets, ["residents", "films"])}) 
   uploadFileS3(@UploadedFile() file: Express.Multer.File,
   @Body() fileUploadDto: FileUploadDto) {
     return this.planetsService.uploadFileS3(file, fileUploadDto);

@@ -48,7 +48,7 @@ describe('SpeciesController', () => {
   })
 
   it("calling findAll method", () => {
-    controller.findAll();
+    controller.findAll(1, 5);
     expect(spyService.findAll).toHaveBeenCalled();
   })
 

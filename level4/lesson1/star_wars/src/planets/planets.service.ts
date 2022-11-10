@@ -2,6 +2,7 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FileUploadDto } from 'src/images/dto/create-image.dto';
 import { Repository } from 'typeorm';
+import { Pagination, IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
 import { CreatePlanetDto } from './dto/create-planet.dto';
 import { Planets } from './entities/planet.entity';
@@ -53,20 +54,8 @@ export class PlanetsService {
     });
   }
 
-  async findAll(): Promise<CreatePlanetDto[]> {
-    return this.planetRepository.find({ 
-      relations: this.propsRelations,
-      relationLoadStrategy: 'query'
-    })
-    .then(array => {
-      return array.map((person) => {
-        let planets: CreatePlanetDto = new CreatePlanetDto();
-        for (let key in person) {
-          planets[key] = this.propsRelations.includes(key) && person[key] ? person[key].map((elem) => elem.url) : person[key];
-        }
-        return planets;
-      })
-    })
+  async findAll(options: IPaginationOptions): Promise<Pagination<Planets>> {
+    return paginate<Planets>(this.planetRepository, options);
   }
 
   async findOne(name: string): Promise<CreatePlanetDto> {

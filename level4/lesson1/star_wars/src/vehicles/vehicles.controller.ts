@@ -1,5 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, Query, DefaultValuePipe, UploadedFile, UseGuards, ValidationPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody, ApiQuery, ApiConsumes, ApiProperty, ApiParam } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, Query, DefaultValuePipe, UploadedFile, UseGuards, ValidationPipe, ClassSerializerInterceptor, ParseIntPipe } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody, ApiQuery, ApiConsumes, ApiProperty, ApiParam, ApiExtraModels, getSchemaPath, OmitType } from '@nestjs/swagger';
+import { Pagination } from 'nestjs-typeorm-paginate';
+
 import { VehiclesService } from './vehicles.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { Vehicles } from './entities/vehicle.entity';
@@ -15,6 +17,8 @@ import { Role } from '../auth/roles/role.enum';
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiTags('vehicles')
+@ApiExtraModels(Vehicles) 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('vehicles')
 export class VehiclesController {
   constructor(private readonly vehiclesService: VehiclesService) {}
@@ -23,14 +27,19 @@ export class VehiclesController {
   @Roles(Role.Admin)
   @ApiBody({ type: CreateVehicleDto })
   @ApiOperation({ summary: 'Create vehicle or update person by name' })
+  @ApiResponse({ status: 201, description: 'OK', schema: {$ref: getSchemaPath(Vehicles)}})
   create(@Body(new ValidationPipe()) createVehiclesDto: CreateVehicleDto): Promise<Vehicles> {
     return this.vehiclesService.create(createVehiclesDto);
   }
 
   @Get()
   @ApiOperation({ summary: 'Find all' })
-  findAll(): Promise<CreateVehicleDto[]> {
-    return this.vehiclesService.findAll();
+  @ApiResponse({status: 200, type: Vehicles})
+  findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+  ): Promise<Pagination<Vehicles>> {
+    return this.vehiclesService.findAll({ page, limit });
   }
 
   @Get(':name')
@@ -62,6 +71,7 @@ export class VehiclesController {
     description: 'Image of vehicle',
     type: FilesUploadDto,
   })
+  @ApiResponse({status: 201, type: OmitType(Vehicles, ["pilots", "films"])})
   uploadFile(@UploadedFiles() files: Array<Express.Multer.File>,
   @Body() updateUserDto: FilesUploadDto): Promise<Vehicles> {
     updateUserDto.images = files.map(elem => `http://${process.env.HOST}:${process.env.PORT}/` + elem.filename);
@@ -88,6 +98,7 @@ export class VehiclesController {
     description: 'Image of vehicle',
     type: FileUploadDto,
   })
+  @ApiResponse({status: 201, type: OmitType(Vehicles, ["pilots", "films"])})
   uploadFileS3(@UploadedFile() file: Express.Multer.File,
   @Body() fileUploadDto: FileUploadDto) {
     return this.vehiclesService.uploadFileS3(file, fileUploadDto);

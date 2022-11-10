@@ -1,5 +1,5 @@
-import { Controller, Post, Get, Header, Delete, Param, Body, Query, ParseIntPipe, HttpStatus, DefaultValuePipe, ValidationPipe, UseInterceptors, UploadedFiles, UploadedFile, StreamableFile, UseGuards, Res  } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody, ApiQuery, ApiConsumes, ApiParam } from '@nestjs/swagger';
+import { Controller, Post, Get, Header, Delete, Param, Body, Query, ParseIntPipe, HttpStatus, DefaultValuePipe, ValidationPipe, UseInterceptors, UploadedFiles, UploadedFile, StreamableFile, UseGuards, Res, ClassSerializerInterceptor, Put  } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody, ApiQuery, ApiConsumes, ApiParam, getSchemaPath, ApiExtraModels, OmitType } from '@nestjs/swagger';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { createReadStream } from 'fs';
 import { join } from 'path';
@@ -8,7 +8,7 @@ import type { Response } from 'express';
 import { CreatePeopleDto } from './dto/create-people.dto';
 import { People } from './entities/people.entity';
 import { PeopleService } from './people.service';
-import { PeoplePaginate } from './interfaces/interface';
+import { PaginateType } from './interfaces/interface';
 import { TransformInterceptor } from './interceptor/transform.interceptor';
 import { FileUploadDto, FilesUploadDto } from '../images/dto/create-image.dto';
 import { optionsDiskStorage, optionsMemoryStorage } from '../common/options';
@@ -17,21 +17,22 @@ import { Role } from '../auth/roles//role.enum'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles/roles.guard';
 import { ValidationPipeMy } from './interceptor/validation.pipe';
-
+import { ApiPaginatedResponse } from '../common/paginate-response-api.decorator';
 
 //@UseInterceptors(new TransformInterceptor()) // включен глобальный useGlobalInterceptors
 //@ApiBearerAuth()
 @ApiTags('people')
 @Controller('people')
+@ApiExtraModels(People, PaginateType) 
+@UseInterceptors(ClassSerializerInterceptor)
 export class PeopleController {
     constructor(private readonly peopleService: PeopleService) {}   
   
     @Post()
     @ApiBody({ type: CreatePeopleDto })
     @ApiOperation({ summary: 'Create people or update person by name' })
-    @ApiResponse({ status: 403, description: 'Forbidden.' })
-    create(@Body(new ValidationPipe()) createUserDto: CreatePeopleDto): Promise<People> {
-      //console.log(createUserDto);
+    @ApiResponse({ status: 201, description: 'OK', schema: {$ref: getSchemaPath(People)}})
+    async create(@Body(new ValidationPipe()) createUserDto: CreatePeopleDto): Promise<People> {
       return this.peopleService.create(createUserDto);      
     }
     
@@ -42,7 +43,8 @@ export class PeopleController {
       description: "Optional parameter",
       required: false
     })
-    findAll(@Query('page', new DefaultValuePipe(1), new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) page: number): Promise<PeoplePaginate> {
+    @ApiPaginatedResponse(People)
+    findAll(@Query('page', new DefaultValuePipe(1), new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) page: number): Promise<PaginateType<CreatePeopleDto>> {
       return this.peopleService.findAll(page);
     }
   
@@ -60,18 +62,11 @@ export class PeopleController {
   
     @Delete(':name')
     @ApiOperation({ summary: 'Remove one people' })
-    @ApiParam({ name: "name", example: "Luke Skywalke", description: 'The name of this person' }) 
+    @ApiParam({ name: "name", example: "Luke Skywalker", description: 'The name of this person' }) 
     remove(@Param('name') name: string): Promise<{ name: string; deleted: string; }> {
       return this.peopleService.remove(name);
     }
-
-    @Get('file/download/:image')
-    @Header('Content-Type', 'image/jpeg')
-    @Header('Content-Disposition', 'attachment; filename="image.jpeg"')
-    getStaticFile(@Param('image') image: string): StreamableFile {      
-      return this.peopleService.streamImage(image);
-    }
-
+    
     @Post('file/upload')
     @ApiOperation({ summary: 'File upload in local storage' })
     @UseInterceptors(FilesInterceptor('files', 10, optionsDiskStorage))
@@ -80,8 +75,9 @@ export class PeopleController {
       description: 'Image of people',
       type: FilesUploadDto,
     })
+    @ApiResponse({status: 201, type: OmitType(People, ["films", "species", "vehicles", "starships", "homeworld"])})    
     uploadFile(@UploadedFiles(
-        // new ParseFilePipeBuilder()
+        // new ParseFilePipeBuilder()    // тоже самое делает еще на этапе FilesInterceptor
         //   .addFileTypeValidator({
         //     fileType: /jpeg|png/
         //   })
@@ -114,6 +110,7 @@ export class PeopleController {
       description: 'Image of people',
       type: FileUploadDto,
     })
+    @ApiResponse({status: 201, type: OmitType(People, ["films", "species", "vehicles", "starships", "homeworld"])})
     uploadFileS3(@UploadedFile() file: Express.Multer.File,
     @Body() fileUploadDto: FileUploadDto) {
       return this.peopleService.uploadFileS3(file, fileUploadDto);
@@ -126,8 +123,17 @@ export class PeopleController {
       name: 'image',
       description: "Full url address: https://mnodebucket.s3.eu-central-1.amazonaws.com/img-c3ask0z2yub.jpeg"
     })
-    deleteFileS3(@Param('name') name: string, @Query('image', new ValidationPipeMy('s3'), new DefaultValuePipe('')) image: string) {
+    deleteFileS3(
+      @Param('name') name: string, 
+      @Query('image', new ValidationPipeMy('s3'), new DefaultValuePipe('')) image: string
+      ) {
       return this.peopleService.deleteFileS3(name, image);
     }
 
+    // @Get('file/download/:image')
+    // @Header('Content-Type', 'image/jpeg')
+    // @Header('Content-Disposition', 'attachment; filename="image.jpeg"')
+    // getStaticFile(@Param('image') image: string): StreamableFile {      
+    //   return this.peopleService.streamImage(image);
+    // }
 }

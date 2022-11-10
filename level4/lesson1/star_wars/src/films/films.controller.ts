@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, DefaultValuePipe, UploadedFile, Query, UseGuards, ValidationPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody, ApiQuery, ApiConsumes, ApiProperty, ApiParam } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, DefaultValuePipe, UploadedFile, Query, UseGuards, ValidationPipe, ClassSerializerInterceptor, ParseIntPipe } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody, ApiQuery, ApiConsumes, ApiProperty, ApiParam, ApiExtraModels, getSchemaPath, OmitType } from '@nestjs/swagger';
+import { Pagination } from 'nestjs-typeorm-paginate';
 import { FilmsService } from './films.service';
 import { CreateFilmDto } from './dto/create-film.dto';
 import { Films } from './entities/film.entity';
@@ -16,6 +17,8 @@ import { RolesGuard } from '../auth/roles/roles.guard';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiTags('films')
 @Controller('films')
+@ApiExtraModels(Films) 
+@UseInterceptors(ClassSerializerInterceptor)
 export class FilmsController {
   constructor(private readonly filmsService: FilmsService) {}
 
@@ -23,14 +26,19 @@ export class FilmsController {
   @Roles(Role.Admin)
   @ApiBody({ type: CreateFilmDto })
   @ApiOperation({ summary: 'Create film or update person by name' })
+  @ApiResponse({ status: 201, description: 'OK', schema: {$ref: getSchemaPath(Films)}})
   create(@Body(new ValidationPipe()) createFilmDto: CreateFilmDto): Promise<Films> {
     return this.filmsService.create(createFilmDto);
   }
 
   @Get()
   @ApiOperation({ summary: 'Find all' })
-  findAll(): Promise<CreateFilmDto[]> {
-    return this.filmsService.findAll();
+  @ApiResponse({status: 200, type: Films})
+  findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+  ): Promise<Pagination<Films>> { // Promise<CreateFilmDto[]> {
+    return this.filmsService.findAll({ page, limit });
   }
 
   @Get(':title')
@@ -44,11 +52,6 @@ export class FilmsController {
   findOne(@Param('title') title: string): Promise<CreateFilmDto> {
     return this.filmsService.findOne(title);
   }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateFilmDto: UpdateFilmDto) {
-  //   return this.filmsService.update(+id, updateFilmDto);
-  // }
 
   @Delete(':title')
   @Roles(Role.Admin)
@@ -67,6 +70,7 @@ export class FilmsController {
     description: 'Image of films',
     type: FilesUploadDto,
   })
+  @ApiResponse({status: 201, type: OmitType(Films, ["characters", "species", "vehicles", "starships", "planets"])}) 
   uploadFile(@UploadedFiles() files: Array<Express.Multer.File>,
   @Body() updateUserDto: FilesUploadDto): Promise<Films> {
     updateUserDto.images = files.map(elem => `http://${process.env.HOST}:${process.env.PORT}/` + elem.filename);
@@ -93,6 +97,7 @@ export class FilmsController {
     description: 'Image of people',
     type: FileUploadDto,
   })
+  @ApiResponse({status: 201, type: OmitType(Films, ["characters", "species", "vehicles", "starships", "planets"])})
   uploadFileS3(@UploadedFile() file: Express.Multer.File,
   @Body() fileUploadDto: FileUploadDto) {
     return this.filmsService.uploadFileS3(file, fileUploadDto);

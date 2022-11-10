@@ -39,9 +39,11 @@ export class AuthService {
     });
   }
 
-  async addAdmin(username: string): Promise<Users> {
-    const user = await this.usersService.findOne(username);
+  async addAdmin(username: string): Promise<Omit<Users, "password">> {
+    let user = await this.usersService.findOne(username);
     user.roles = Role.Admin;
-    return await this.usersService.addRoleAdmin(user);
+    user = await this.usersService.addRoleAdmin(user);
+    const { password, ...result } = user;
+    return result;
   }
 }

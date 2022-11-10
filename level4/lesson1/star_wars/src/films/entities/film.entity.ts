@@ -6,6 +6,7 @@ import { Vehicles } from './../../vehicles/entities/vehicle.entity';
 import { Starships } from './../../starships/entities/starship.entity';
 import { Species } from './../../species/entities/species.entity';
 import { Images } from '../../images/entities/image.entity';
+import { Exclude, Transform } from 'class-transformer';
 
 @Entity()
 export class Films {
@@ -35,31 +36,32 @@ export class Films {
 
   //@Column("simple-array")
   @ManyToMany((type) => Species, (species) => species.films)
-  @ApiProperty({ example: ["https://localhost:3000/api/species/2/"], description: 'An array of species resource URLs that are in this film' })
+  @ApiProperty({ example: ["http://localhost:3000/species/2/"], description: 'An array of species resource URLs that are in this film' })
+  @Transform(({ value }) => value.map((elem) => elem.url))
   species: Species[];
-
-  //@Column("simple-array")
+  
   @ManyToMany((type) => Starships, (starships) => starships.films)
-  @ApiProperty({ example: ["https://localhost:3000/api/starships/12/"], description: 'An array of starship resource URLs that are in this film' })
+  @ApiProperty({ example: ["http://localhost:3000/starships/12/"], description: 'An array of starship resource URLs that are in this film' })
+  @Transform(({ value }) => value.map((elem) => elem.url))
   starships: Starships[];
-
-  //@Column("simple-array")
+  
   @ManyToMany((type) => Vehicles, (vehicles) => vehicles.films)
-  @ApiProperty({ example: ["https://localhost:3000/api/vehicles/14/"], description: 'An array of vehicle resource URLs that are in this film' })
+  @ApiProperty({ example: ["http://localhost:3000/vehicles/14/"], description: 'An array of vehicle resource URLs that are in this film' })
+  @Transform(({ value }) => value.map((elem) => elem.url))
   vehicles: Vehicles[];
   
-  //@Column("simple-array")
-  @ManyToMany((type) => People, (people) => people.films)
-  @ApiProperty({ example: ["https://localhost:3000/api/people/1/"], description: 'An array of people resource URLs that are in this film' })
+  @ManyToMany((type) => People, (people) => people.films, {onDelete: 'CASCADE'})
+  @ApiProperty({ example: ["http://localhost:3000/people/1/"], description: 'An array of people resource URLs that are in this film' })
+  @Transform(({ value }) => value.map((elem) => elem.url))
   characters: People[];
-
-  //@Column("simple-array")
+  
   @ManyToMany((type) => Planets, (planets) => planets.films)
-  @ApiProperty({ example: ["https://localhost:3000/api/planets/1/"], description: 'An array of planet resource URLs that are in this film' })
+  @ApiProperty({ example: ["http://localhost:3000/planets/1/"], description: 'An array of planet resource URLs that are in this film' })
+  @Transform(({ value }) => value.map((elem) => elem.url))
   planets: Planets[];
 
   @Column({ default: 'true', unique: true })
-  @ApiProperty({ example: "https://localhost:3000/api/films/1/", description: 'the hypermedia URL of this resource' })
+  @ApiProperty({ example: "http://localhost:3000/films/1/", description: 'the hypermedia URL of this resource' })
   url: string;
 
   @OneToMany(() => Images, (images) => images.films, { 
@@ -67,9 +69,11 @@ export class Films {
   @ApiProperty({ example: ["http://localhost:3000/img-io9at1aivg.jpeg"], description: 'An array of images resource URLs that are in this film' })
   images: Images[];
 
+  @Exclude()
   @CreateDateColumn()
   created: Date;
 
+  @Exclude()
   @UpdateDateColumn()
   edited: Date;
 }

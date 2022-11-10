@@ -1,5 +1,7 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Pagination, IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
+
 import { Films } from '../films/entities/film.entity';
 import { FileUploadDto } from '../images/dto/create-image.dto';
 import { ImagesService } from '../images/images.service';
@@ -54,20 +56,8 @@ export class VehiclesService {
     });
   }
 
-  async findAll(): Promise<CreateVehicleDto[]> {
-    return this.vehiclesRepository.find({ 
-      relations: this.propsRelations,
-      relationLoadStrategy: 'query'
-    })
-    .then(array => {
-      return array.map((person) => {
-        let vehicles: CreateVehicleDto = new CreateVehicleDto();
-        for (let key in person) {
-          vehicles[key] = this.propsRelations.includes(key) && person[key] ? person[key].map((elem) => elem.url) : person[key];
-        }
-        return vehicles;
-      })
-    })
+  async findAll(options: IPaginationOptions): Promise<Pagination<Vehicles>> {
+    return paginate<Vehicles>(this.vehiclesRepository, options);
   }
 
   async findOne(name: string): Promise<CreateVehicleDto> {

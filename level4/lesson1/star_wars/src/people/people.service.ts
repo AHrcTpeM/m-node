@@ -1,25 +1,21 @@
 import { HttpException, HttpStatus, Injectable, StreamableFile } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { createReadStream } from 'fs';
-import { join } from 'path';
 
 import { CreatePeopleDto } from './dto/create-people.dto';
 import { People } from './entities/people.entity';
-import { PeoplePaginate } from './interfaces/interface';
+import { PaginateType } from './interfaces/interface';
 import { Films } from './../films/entities/film.entity';
 import { Starships } from './../starships/entities/starship.entity';
 import { Planets } from './../planets/entities/planet.entity';
 import { Species } from './../species/entities/species.entity';
 import { Vehicles } from './../vehicles/entities/vehicle.entity';
 import { FileUploadDto } from '../images/dto/create-image.dto';
-import { Images } from '../images/entities/image.entity';
 import { ImagesService } from '../images/images.service';
-import { type } from 'os';
 
 
 @Injectable()
-export class PeopleService {  
+export class PeopleService {
   private readonly propsRelations: string[];
 
   constructor(    
@@ -43,7 +39,7 @@ export class PeopleService {
 
     private readonly imagesService: ImagesService
   ) {
-    this.propsRelations = ['films', 'species', 'starships', 'vehicles', 'planets', 'images'];
+    this.propsRelations = ['films', 'species', 'starships', 'vehicles', 'images'];
   }
 
   async create(createPeopleDto: CreatePeopleDto): Promise<People> {
@@ -53,7 +49,7 @@ export class PeopleService {
     
     for (let key in createPeopleDto) {
       if (key === 'images') continue; // изменяем каринки только через свои контроллеры
-      people[key] = this.propsRelations.includes(key) ? [] : createPeopleDto[key];
+      people[key] = this.propsRelations.includes(key) ? [] : createPeopleDto[key]; // зануляем только те которые передаем!
     }
     // people.films = [];
     // people.starships = [];
@@ -63,7 +59,11 @@ export class PeopleService {
     await this.peopleRepository.save(people).catch((err) => {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }); // обнуляем связи, что бы не было ошибки дублирования внешних ключей
-
+    
+    people.homeworld = createPeopleDto['homeworld'] ?
+                        await this.planetsRepository.findOne({where :{ url:  createPeopleDto['homeworld'] }}) :
+                        null;
+                        
     for (let i = 0; i < this.propsRelations.length - 1; i++) {
       createPeopleDto[this.propsRelations[i]]?.forEach(async (elem) => {        
         const person = await resources[i].findOneBy({ url: elem });
@@ -92,26 +92,28 @@ export class PeopleService {
     });
   }
 
-  async findAll(page: number): Promise<PeoplePaginate> {
+  async findAll(page: number): Promise<PaginateType<CreatePeopleDto>> {
     const numPage = page < 1 ? 1 : page;
     const count = await this.peopleRepository.count();
     const topPage = Math.floor(count / 10);
 
-    const peoplePag: PeoplePaginate = {
+    const peoplePag: PaginateType<CreatePeopleDto> = {
       count,
       next: numPage > topPage ? null:  `http://localhost:3000/people/?page=${numPage + 1}`,
       previous: numPage < 2 ? null: `http://localhost:3000/people/?page=${numPage - 1}`,
       results: await this.peopleRepository.find({
         skip: (numPage - 1) * 10,
         take: 10,
-        relations: this.propsRelations,
+        relations: [...this.propsRelations, 'homeworld'],
         relationLoadStrategy: 'query', 
       })
       .then(array => {
         return array.map((person) => {
           let people: CreatePeopleDto = new CreatePeopleDto();
           for (let key in person) {
-            people[key] = this.propsRelations.includes(key) && person[key] ? person[key].map((elem) => elem.url) : person[key];
+            people[key] = this.propsRelations.includes(key) && person[key] ? 
+                          person[key].map((elem) => elem.url) : 
+                          key !== 'homeworld'? person[key] : person[key]?.url;
           }
           return people;
         })
@@ -123,7 +125,7 @@ export class PeopleService {
   findOne(name: string): Promise<CreatePeopleDto> {
     const url =  `http://${process.env.HOST}:${process.env.PORT}/people/${+name}/`;
     return this.peopleRepository.findOne({ 
-      relations: this.propsRelations,
+      relations: [...this.propsRelations, 'homeworld'],
       relationLoadStrategy: 'query',
       where: [{ name }, { url }]
     })
@@ -131,7 +133,9 @@ export class PeopleService {
         if (person) {
           let people: CreatePeopleDto = new CreatePeopleDto();
           for (let key in person) {
-            people[key] = this.propsRelations.includes(key) && person[key] ? person[key].map((elem) => elem.url) : person[key];
+            people[key] = this.propsRelations.includes(key) && person[key] ? 
+                          person[key].map((elem) => elem.url) : 
+                          key !== 'homeworld'? person[key] : person[key].url;
           }
           return people;
         } else {
@@ -161,7 +165,7 @@ export class PeopleService {
       }      
     })
     .catch((err) => err)
-  }  
+  }
 
   async uploadFile(fileUploadDto: FileUploadDto): Promise<People> {
     return await this.imagesService.uploadFile('people', fileUploadDto, People);
@@ -171,11 +175,6 @@ export class PeopleService {
     return await this.imagesService.deleteImage('people', name, image);    
   }
 
-  streamImage(image: string): StreamableFile {
-    const file = createReadStream(join(process.cwd(), `files/${image}`)); // работает без Interceptor { data: users }
-    return new StreamableFile(file);
-  }
-
   async uploadFileS3(file: Express.Multer.File, fileUploadDto: FileUploadDto) {
     return await this.imagesService.uploadFileS3('people', file, fileUploadDto, People);
   }  
@@ -183,4 +182,9 @@ export class PeopleService {
   async deleteFileS3(name: string, key: string) {
     return await this.imagesService.deleteFileS3('people', name, key);
   }
+
+  // streamImage(image: string): StreamableFile {
+  //   const file = createReadStream(join(process.cwd(), `files/${image}`)); // работает без Interceptor { data: users }
+  //   return new StreamableFile(file);
+  // }
 }

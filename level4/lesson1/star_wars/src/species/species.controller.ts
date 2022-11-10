@@ -1,5 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, Query, DefaultValuePipe, UploadedFile, UseGuards, ValidationPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody, ApiQuery, ApiConsumes, ApiProperty, ApiParam } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, Query, DefaultValuePipe, UploadedFile, UseGuards, ValidationPipe, ClassSerializerInterceptor, ParseIntPipe } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody, ApiQuery, ApiConsumes, ApiParam, ApiExtraModels, getSchemaPath, OmitType } from '@nestjs/swagger';
+import { Pagination } from 'nestjs-typeorm-paginate';
+
 import { SpeciesService } from './species.service';
 import { CreateSpeciesDto } from './dto/create-species.dto';
 import { Species } from './entities/species.entity';
@@ -16,6 +18,8 @@ import { Role } from '../auth/roles/role.enum';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiTags('species')
 @Controller('species')
+@ApiExtraModels(Species) 
+@UseInterceptors(ClassSerializerInterceptor)
 export class SpeciesController {
   constructor(private readonly speciesService: SpeciesService) {}
 
@@ -23,14 +27,19 @@ export class SpeciesController {
   @Roles(Role.Admin)
   @ApiBody({ type: CreateSpeciesDto })
   @ApiOperation({ summary: 'Create species or update person by name' })
+  @ApiResponse({ status: 201, description: 'OK', schema: {$ref: getSchemaPath(Species)}})
   create(@Body(new ValidationPipe()) createSpeciesDto: CreateSpeciesDto): Promise<Species> {
     return this.speciesService.create(createSpeciesDto);
   }
 
   @Get()
   @ApiOperation({ summary: 'Find all' })
-  findAll(): Promise<CreateSpeciesDto[]> {
-    return this.speciesService.findAll();
+  @ApiResponse({status: 200, type: Species})
+  findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+  ): Promise<Pagination<Species>> {
+    return this.speciesService.findAll({ page, limit });
   }
 
   @Get(':name')
@@ -62,6 +71,7 @@ export class SpeciesController {
     description: 'Image of species',
     type: FilesUploadDto,
   })
+  @ApiResponse({status: 201, type: OmitType(Species, ["people", "films"])})
   uploadFile(@UploadedFiles() files: Array<Express.Multer.File>,
   @Body() updateUserDto: FilesUploadDto): Promise<Species> {
     updateUserDto.images = files.map(elem => `http://${process.env.HOST}:${process.env.PORT}/` + elem.filename);
@@ -88,6 +98,7 @@ export class SpeciesController {
     description: 'Image of species',
     type: FileUploadDto,
   })
+  @ApiResponse({status: 201, type: OmitType(Species, ["people", "films"])})
   uploadFileS3(@UploadedFile() file: Express.Multer.File,
   @Body() fileUploadDto: FileUploadDto) {
     return this.speciesService.uploadFileS3(file, fileUploadDto);

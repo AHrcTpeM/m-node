@@ -1,4 +1,5 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { unlink } from 'fs';
 import { S3 } from 'aws-sdk';
@@ -37,7 +38,9 @@ export class ImagesService {
         private readonly vehiclesRepository: Repository<Vehicles>,
     
         @InjectRepository(Images)
-        private readonly imagesRepository: Repository<Images>
+        private readonly imagesRepository: Repository<Images>,
+
+        private configService: ConfigService
       ) {
         this.resources = {
             'people': this.peopleRepository, 
@@ -120,7 +123,7 @@ export class ImagesService {
         const name = Math.random().toString(36).replace("0.", "img-");
         file.originalname = `${name}${ext}`;
         const s3file = await s3.upload({
-          Bucket: process.env.AWS_BUCKET_NAME,
+          Bucket: this.configService.get('aws.bucketName'), // process.env.AWS_BUCKET_NAME,
           ContentType: `image/${ext.slice(1)}`,
           Body: file.buffer,
           Key: file.originalname
@@ -130,17 +133,18 @@ export class ImagesService {
       }  
     
       async deleteFileS3(entity: string, name: string, key: string) {
+        const aws = this.configService.get('aws');
         const result = await this.deleteImage(entity, name, key);
-        key = key.replace(`https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/`, '');
+        key = key.replace(`https://${aws.bucketName}.s3.${aws.region}.amazonaws.com/`, '');
         const s3 = new S3();
         const y = await s3.getObject({
-          Bucket: process.env.AWS_BUCKET_NAME,
+          Bucket: aws.bucketName, // process.env.AWS_BUCKET_NAME,
           Key: key
         }).promise().catch(err => {
           throw new HttpException(err.message, HttpStatus.NOT_FOUND)
         });
         const x = await s3.deleteObject({
-          Bucket: process.env.AWS_BUCKET_NAME,
+          Bucket: aws.bucketName, // process.env.AWS_BUCKET_NAME,
           Key: key
         }).promise();
         return result;

@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, Query, UploadedFile, DefaultValuePipe, UseGuards, ValidationPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody, ApiQuery, ApiConsumes, ApiProperty, ApiParam } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, Query, UploadedFile, DefaultValuePipe, UseGuards, ValidationPipe, ClassSerializerInterceptor, ParseIntPipe } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody, ApiQuery, ApiConsumes, ApiProperty, ApiParam, ApiExtraModels, getSchemaPath, OmitType } from '@nestjs/swagger';
+import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { StarshipsService } from './starships.service';
 import { CreateStarshipDto } from './dto/create-starship.dto';
@@ -17,6 +18,8 @@ import { Role } from '../auth/roles/role.enum';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiTags('starships')
 @Controller('starships')
+@ApiExtraModels(Starships) 
+@UseInterceptors(ClassSerializerInterceptor)
 export class StarshipsController {
   constructor(private readonly starshipsService: StarshipsService) {}
 
@@ -24,14 +27,19 @@ export class StarshipsController {
   @Roles(Role.Admin)
   @ApiBody({ type: CreateStarshipDto })
   @ApiOperation({ summary: 'Create starship or update person by name' })
+  @ApiResponse({ status: 201, description: 'OK', schema: {$ref: getSchemaPath(Starships)}})
   create(@Body(new ValidationPipe()) createStarshipDto: CreateStarshipDto): Promise<Starships> {
     return this.starshipsService.create(createStarshipDto);
   }
 
   @Get()
   @ApiOperation({ summary: 'Find all' })
-  findAll(): Promise<CreateStarshipDto[]> {
-    return this.starshipsService.findAll();
+  @ApiResponse({status: 200, type: Starships})
+  findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+  ): Promise<Pagination<Starships>> {
+    return this.starshipsService.findAll({ page, limit });
   }
 
   @Get(':name')
@@ -63,6 +71,7 @@ export class StarshipsController {
     description: 'Image of starships',
     type: FilesUploadDto,
   })
+  @ApiResponse({status: 201, type: OmitType(Starships, ["pilots", "films"])})
   uploadFile(@UploadedFiles() files: Array<Express.Multer.File>,
   @Body() updateUserDto: FilesUploadDto): Promise<Starships> {
     updateUserDto.images = files.map(elem => `http://${process.env.HOST}:${process.env.PORT}/` + elem.filename);
@@ -89,6 +98,7 @@ export class StarshipsController {
     description: 'Image of starship',
     type: FileUploadDto,
   })
+  @ApiResponse({status: 201, type: OmitType(Starships, ["pilots", "films"])})
   uploadFileS3(@UploadedFile() file: Express.Multer.File,
   @Body() fileUploadDto: FileUploadDto) {
     return this.starshipsService.uploadFileS3(file, fileUploadDto);

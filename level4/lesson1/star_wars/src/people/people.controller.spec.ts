@@ -65,13 +65,7 @@ describe('PeopleController', () => {
     controller.remove(name);
     expect(spyService.remove).toHaveBeenCalled();
   })
-
-  it("calling getStaticFile method", () => {
-    const name = 'Abu';
-    controller.getStaticFile(name);
-    expect(spyService.streamImage).toHaveBeenCalled();
-  })
-
+  
   it("calling uploadFile method", () => {
     const files: Array<Express.Multer.File> = [];
     const dto = new FilesUploadDto();
@@ -99,4 +93,10 @@ describe('PeopleController', () => {
     controller.deleteFileS3(name, image);
     expect(spyService.deleteFileS3).toHaveBeenCalled();
   })
+
+  // it("calling getStaticFile method", () => {
+  //   const name = 'Abu';
+  //   controller.getStaticFile(name);
+  //   expect(spyService.streamImage).toHaveBeenCalled();
+  // })
 });

@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { People } from './../../people/entities/people.entity';
 import { Films } from './../../films/entities/film.entity';
 import { Images } from '../../images/entities/image.entity';
+import { Exclude, Transform } from 'class-transformer';
 
 @Entity()
 export class Species {
@@ -43,11 +44,11 @@ export class Species {
   language: string;
 
   @Column({ nullable: true, default: 'true' })
-  @ApiProperty({ example: "https://localhost:3000/api/planets/14/", description: 'The URL of a planet resource, a planet that this species originates from'})
+  @ApiProperty({ example: "http://localhost:3000/planets/14/", description: 'The URL of a planet resource, a planet that this species originates from'})
   homeworld: string;
 
   //@Column("simple-array")
-  @ManyToMany((type) => People, (people) => people.species)
+  @ManyToMany((type) => People, (people) => people.species, {onDelete: 'CASCADE'})
   @JoinTable({
     joinColumn: {
     referencedColumnName: "url"
@@ -56,7 +57,8 @@ export class Species {
     referencedColumnName: "url"
   }
   })
-  @ApiProperty({ example: ["https://localhost:3000/api/people/13/"], description: 'An array of People URL Resources that are a part of this species' })
+  @Transform(({ value }) => value.map((elem) => elem.url))
+  @ApiProperty({ example: ["http://localhost:3000/people/13/"], description: 'An array of People URL Resources that are a part of this species' })
   people: People[];
 
   //@Column("simple-array")
@@ -69,11 +71,12 @@ export class Species {
     referencedColumnName: "url"
   }
   })
-  @ApiProperty({ example: ["https://localhost:3000/api/films/1/", "https://localhost:3000/api/films/2/"], description: 'An array of Film URL Resources that this species has appeared in'})
+  @Transform(({ value }) => value.map((elem) => elem.url))
+  @ApiProperty({ example: ["http://localhost:3000/films/1/", "http://localhost:3000/films/2/"], description: 'An array of Film URL Resources that this species has appeared in'})
   films: Films[];
 
   @Column({ default: 'true', unique: true })
-  @ApiProperty({ example: "https://localhost:3000/api/species/1/", description: 'the hypermedia URL of this resource' })
+  @ApiProperty({ example: "http://localhost:3000/species/1/", description: 'the hypermedia URL of this resource' })
   url: string;
 
   @OneToMany(() => Images, (images) => images.species, { 
@@ -81,9 +84,11 @@ export class Species {
   @ApiProperty({ example: ["http://localhost:3000/img-io9at1aivg.jpeg"], description: 'An array of images resource URLs that are in this planet' })
   images: Images[];
 
+  @Exclude()
   @CreateDateColumn()
   created: Date;
 
+  @Exclude()
   @UpdateDateColumn()
   edited: Date;
 }

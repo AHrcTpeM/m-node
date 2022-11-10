@@ -6,7 +6,7 @@ import { Users } from './entities/user.entity';
 
 class RepositoryFake {
     public async save(): Promise<void> {}
-    public async findOneBy(): Promise<void> {}
+    public async findOneBy(): Promise<Users> { return new Users}
 }
 
 describe('UsersService', () => {

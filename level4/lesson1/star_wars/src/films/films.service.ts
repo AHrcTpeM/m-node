@@ -1,6 +1,7 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Pagination, IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
 import { CreateFilmDto } from './dto/create-film.dto';
 import { Films } from './entities/film.entity';
@@ -66,20 +67,21 @@ export class FilmsService {
     });
   }
 
-  async findAll(): Promise<CreateFilmDto[]> {
-    return this.filmsRepository.find({ 
-      relations: this.propsRelations,
-      relationLoadStrategy: 'query'
-    })
-    .then(array => {
-      return array.map((person) => {
-        let films: CreateFilmDto = new CreateFilmDto();
-        for (let key in person) {
-          films[key] = this.propsRelations.includes(key) && person[key] ? person[key].map((elem) => elem.url) : person[key];
-        }
-        return films;
-      })
-    })
+  async findAll(options: IPaginationOptions): Promise<Pagination<Films>> { // Promise<CreateFilmDto[]> {
+    return paginate<Films>(this.filmsRepository, options);
+    // return this.filmsRepository.find({ 
+    //   relations: this.propsRelations,
+    //   relationLoadStrategy: 'query'
+    // })
+    // .then(array => {
+    //   return array.map((person) => {
+    //     let films: CreateFilmDto = new CreateFilmDto();
+    //     for (let key in person) {
+    //       films[key] = this.propsRelations.includes(key) && person[key] ? person[key].map((elem) => elem.url) : person[key];
+    //     }
+    //     return films;
+    //   })
+    // })
   }
 
   async findOne(name: string): Promise<CreateFilmDto> {
