@@ -71,14 +71,17 @@ describe('VehiclesService', () => {
     dto.name = 'Abu';
     const vehicles = new Vehicles();
     vehicles.name = 'Moon';
+    const vehicleRepositoryFindOneSpy = jest
+        .spyOn(vehicleRepositorySpy, 'findOne')
+        .mockReturnValue(null);
     const vehicleRepositorySaveSpy = jest
         .spyOn(vehicleRepositorySpy, 'save')
         .mockReturnValue(Promise.resolve(vehicles));
         
     expect(await service.create(dto)).toEqual(vehicles);
     expect(createSpy).toHaveBeenCalledWith(dto);
-    expect(vehicleRepositorySaveSpy).toHaveBeenCalledTimes(2);
-    expect(vehicleRepositorySaveSpy).toHaveBeenCalledWith(dto);
+    expect(vehicleRepositoryFindOneSpy).toHaveBeenCalled();
+    expect(vehicleRepositorySaveSpy).toHaveBeenCalled();
   });
 
   it('should call findOne method with expected param', async () => {

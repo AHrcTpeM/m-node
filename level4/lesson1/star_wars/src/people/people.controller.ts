@@ -1,23 +1,16 @@
-import { Controller, Post, Get, Header, Delete, Param, Body, Query, ParseIntPipe, HttpStatus, DefaultValuePipe, ValidationPipe, UseInterceptors, UploadedFiles, UploadedFile, StreamableFile, UseGuards, Res, ClassSerializerInterceptor, Put  } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody, ApiQuery, ApiConsumes, ApiParam, getSchemaPath, ApiExtraModels, OmitType } from '@nestjs/swagger';
+import { Controller, Post, Get, Delete, Param, Body, Query, ParseIntPipe, HttpStatus, DefaultValuePipe, ValidationPipe, UseInterceptors, UploadedFiles, UploadedFile, ClassSerializerInterceptor, Put  } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiQuery, ApiConsumes, ApiParam, getSchemaPath, ApiExtraModels, OmitType } from '@nestjs/swagger';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { createReadStream } from 'fs';
-import { join } from 'path';
-import type { Response } from 'express';
 
 import { CreatePeopleDto } from './dto/create-people.dto';
 import { People } from './entities/people.entity';
 import { PeopleService } from './people.service';
 import { PaginateType } from './interfaces/interface';
-import { TransformInterceptor } from './interceptor/transform.interceptor';
 import { FileUploadDto, FilesUploadDto } from '../images/dto/create-image.dto';
 import { optionsDiskStorage, optionsMemoryStorage } from '../common/options';
-import { Roles } from '../auth/roles/roles.decorator'
-import { Role } from '../auth/roles//role.enum'
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../auth/roles/roles.guard';
 import { ValidationPipeMy } from './interceptor/validation.pipe';
 import { ApiPaginatedResponse } from '../common/paginate-response-api.decorator';
+import { UpdatePeopleDto } from './dto/update-people.dto';
 
 //@UseInterceptors(new TransformInterceptor()) // включен глобальный useGlobalInterceptors
 //@ApiBearerAuth()
@@ -56,10 +49,18 @@ export class PeopleController {
       description: 'The found record',
       type: People,
     })
-    findOne(@Param('name') name: string): Promise<CreatePeopleDto> {
+    findOne(@Param('name') name: string): Promise<People> {
       return this.peopleService.findOne(name);
     }
   
+    @Put()
+    @ApiBody({ type: UpdatePeopleDto })
+    @ApiResponse({ status: 200, schema: {$ref: getSchemaPath(People)}})
+    @ApiOperation({ summary: 'Update people' })
+    async update(@Body() updatePeopleDto: UpdatePeopleDto): Promise<People> {
+      return this.peopleService.update(updatePeopleDto);
+    }
+    
     @Delete(':name')
     @ApiOperation({ summary: 'Remove one people' })
     @ApiParam({ name: "name", example: "Luke Skywalker", description: 'The name of this person' }) 

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, UseGuards, UseInterceptors, UploadedFiles, Query, DefaultValuePipe, UploadedFile, ValidationPipe, ClassSerializerInterceptor, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseGuards, UseInterceptors, UploadedFiles, Query, DefaultValuePipe, UploadedFile, ValidationPipe, ClassSerializerInterceptor, ParseIntPipe, Put } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiConsumes, ApiBody, ApiParam, ApiQuery, ApiResponse, ApiExtraModels, getSchemaPath, OmitType } from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
 
@@ -13,6 +13,7 @@ import { ValidationPipeMy } from '../people/interceptor/validation.pipe';
 import { RolesGuard } from '../auth/roles/roles.guard';
 import { Roles } from '../auth/roles/roles.decorator';
 import { Role } from '../auth/roles/role.enum';
+import { UpdatePlanetDto } from './dto/update-planet.dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -54,6 +55,16 @@ export class PlanetsController {
     return this.planetsService.findOne(name);
   }
   
+    
+  @Put()
+  @Roles(Role.Admin)
+  @ApiBody({ type: UpdatePlanetDto })
+  @ApiResponse({ status: 200, schema: {$ref: getSchemaPath(Planets)}})
+  @ApiOperation({ summary: 'Update planet' })
+  async update(@Body() updatePlanetsDto: UpdatePlanetDto): Promise<Planets> {
+    return this.planetsService.update(updatePlanetsDto);
+  }
+
   @Delete(':name')
   @Roles(Role.Admin)
   @ApiOperation({ summary: 'Remove one planet' })

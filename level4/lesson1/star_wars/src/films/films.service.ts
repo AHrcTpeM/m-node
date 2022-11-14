@@ -5,13 +5,14 @@ import { Pagination, IPaginationOptions, paginate } from 'nestjs-typeorm-paginat
 
 import { CreateFilmDto } from './dto/create-film.dto';
 import { Films } from './entities/film.entity';
-import { People } from './../people/entities/people.entity';
 import { Starships } from './../starships/entities/starship.entity';
 import { Planets } from './../planets/entities/planet.entity';
 import { Species } from './../species/entities/species.entity';
 import { Vehicles } from '../vehicles/entities/vehicle.entity';
 import { ImagesService } from '../images/images.service';
 import { FileUploadDto } from '../images/dto/create-image.dto';
+import { UpdateFilmDto } from './dto/update-film.dto';
+import { People } from '../people/entities/people.entity';
 
 @Injectable()
 export class FilmsService {
@@ -41,27 +42,57 @@ export class FilmsService {
     this.propsRelations = ['characters', 'species', 'starships', 'vehicles', 'planets', 'images'];
   }
 
-  async create(createfilmsDto: CreateFilmDto): Promise<Films> {
+  async create(createFilmDto: CreateFilmDto): Promise<Films> {
     const resources = [this.peopleRepository, this.speciesRepository, this.starshipsRepository, this.vehiclesRepository, this.planetsRepository];
 
+    const existsFilm = await this.filmsRepository.findOne({where: {title: createFilmDto.title}});
+    if (existsFilm) throw new HttpException("Film already exists", HttpStatus.FORBIDDEN);
     let films = new Films();
     
-    for (let key in createfilmsDto) {
+    for (let key in createFilmDto) {
       if (key === 'images') continue; // изменяем каринки только через свои контроллеры
-      films[key] = this.propsRelations.includes(key) ? [] : createfilmsDto[key];
+      films[key] = this.propsRelations.includes(key) ? [] : createFilmDto[key];
     }
-    await this.filmsRepository.save(films).catch((err) => {
+    
+    await Promise.all(this.propsRelations.map(async (key) => {
+      if (!createFilmDto[key]) {
+         films[key] = [];
+      } else {
+        await Promise.all(createFilmDto[key].map(async (elem) => {        
+          const film = await resources[this.propsRelations.indexOf(key)].findOneBy({ url: elem });
+          if (film) {
+            films[key].push(film);
+          }
+        }))
+      }
+    }))
+    return this.filmsRepository.save(films).catch((err) => {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
-    }); // обнуляем связи, что бы не было ошибки дублирования внешних ключей
+    });
+  }
 
-    for (let i = 0; i < this.propsRelations.length - 1; i++) {
-      createfilmsDto[this.propsRelations[i]]?.forEach(async (elem) => {        
-        const person = await resources[i].findOneBy({ url: elem });
-        if (person) {
-          films[this.propsRelations[i]].push(person);
-        }        
-      })
+  async update(updatefilmsDto: UpdateFilmDto) {
+    const resources = [this.peopleRepository, this.speciesRepository, this.starshipsRepository, this.vehiclesRepository, this.planetsRepository];
+
+    const films = await this.filmsRepository.findOneBy({title: updatefilmsDto.title});
+    if (!films) throw new HttpException("Person not found", HttpStatus.NOT_FOUND);
+    
+    for (let key in updatefilmsDto) {
+      if (key === 'images') continue; // изменяем каринки только через свои контроллеры
+      films[key] = this.propsRelations.includes(key) ? [] : updatefilmsDto[key]; // зануляем только те которые передаем!
     }
+    await this.filmsRepository.save(films);
+                        
+    await Promise.all(this.propsRelations.map(async (key) => {
+      if (updatefilmsDto[key]) {
+        await Promise.all(updatefilmsDto[key].map(async (elem) => {        
+          const film = await resources[this.propsRelations.indexOf(key)].findOneBy({ url: elem });
+          if (film) {
+            films[key].push(film);
+          }
+        }))
+      }
+    }))
     return this.filmsRepository.save(films).catch((err) => {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     });
@@ -74,10 +105,10 @@ export class FilmsService {
     //   relationLoadStrategy: 'query'
     // })
     // .then(array => {
-    //   return array.map((person) => {
+    //   return array.map((film) => {
     //     let films: CreateFilmDto = new CreateFilmDto();
-    //     for (let key in person) {
-    //       films[key] = this.propsRelations.includes(key) && person[key] ? person[key].map((elem) => elem.url) : person[key];
+    //     for (let key in film) {
+    //       films[key] = this.propsRelations.includes(key) && film[key] ? film[key].map((elem) => elem.url) : film[key];
     //     }
     //     return films;
     //   })
@@ -91,11 +122,11 @@ export class FilmsService {
       relationLoadStrategy: 'query',
       where: [{ title: name }, { url }]
     })
-    .then(person => {
-      if (person) {
+    .then(film => {
+      if (film) {
         let films: CreateFilmDto = new CreateFilmDto();
-        for (let key in person) {
-          films[key] = this.propsRelations.includes(key) && person[key] ? person[key].map((elem) => elem.url) : person[key];
+        for (let key in film) {
+          films[key] = this.propsRelations.includes(key) && film[key] ? film[key].map((elem) => elem.url) : film[key];
         }
         return films;
       } else {
@@ -105,16 +136,16 @@ export class FilmsService {
   }
 
   async remove(name: string): Promise<{ name: string; deleted: string; }> {
-    const person = await this.filmsRepository.findOne({ 
+    const film = await this.filmsRepository.findOne({ 
       relations: ['images'],
       relationLoadStrategy: 'query',
       where: { title: name }
     });          
 
-    if (person) {
-      this.imagesService.deleteFiles(person.images.map((img) => img.url)); 
-      this.propsRelations.forEach((obj) => person[obj] = []);
-      await this.filmsRepository.save(person); // зануляем все связи ManyToMany и сохраняем, произойдет их удаление
+    if (film) {
+      this.imagesService.deleteFiles(film.images.map((img) => img.url)); 
+      this.propsRelations.forEach((obj) => film[obj] = []);
+      await this.filmsRepository.save(film); // зануляем все связи ManyToMany и сохраняем, произойдет их удаление
     }
 
     return this.filmsRepository.delete(name)

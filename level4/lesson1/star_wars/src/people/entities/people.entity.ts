@@ -45,7 +45,7 @@ export class People {
   @ManyToOne(() => Planets, (planets) => planets.residents)
   @JoinColumn({ referencedColumnName: "url" })
   @ApiProperty({ example: "http://localhost:3000/planets/1/", description: 'The URL of a planet resource, a planet that this person was born on or inhabits' })
-  @Transform(({ value }) => value.url)
+  @Transform(({ value }) => value?.url ?? "unknown")
   homeworld?: Planets;
 
   //@Column("simple-array")  

@@ -1,5 +1,4 @@
 import { Module, forwardRef } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { PeopleController } from './people.controller';
@@ -11,7 +10,6 @@ import { PlanetsModule } from './../planets/planets.module';
 import { SpeciesModule } from './../species/species.module';
 import { VehiclesModule } from './../vehicles/vehicles.module';
 import { ImagesModule } from '../images/images.module';
-import { RolesGuard } from '../auth/roles/roles.guard';
 
 @Module({  
   imports: [ 

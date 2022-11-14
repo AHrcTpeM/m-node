@@ -5,13 +5,14 @@ import { Repository } from 'typeorm';
 import { CreatePeopleDto } from './dto/create-people.dto';
 import { People } from './entities/people.entity';
 import { PaginateType } from './interfaces/interface';
-import { Films } from './../films/entities/film.entity';
-import { Starships } from './../starships/entities/starship.entity';
-import { Planets } from './../planets/entities/planet.entity';
-import { Species } from './../species/entities/species.entity';
-import { Vehicles } from './../vehicles/entities/vehicle.entity';
+import { Films } from '../films/entities/film.entity';
+import { Starships } from '../starships/entities/starship.entity';
+import { Planets } from '../planets/entities/planet.entity';
+import { Species } from '../species/entities/species.entity';
+import { Vehicles } from '../vehicles/entities/vehicle.entity';
 import { FileUploadDto } from '../images/dto/create-image.dto';
 import { ImagesService } from '../images/images.service';
+import { UpdatePeopleDto } from './dto/update-people.dto';
 
 
 @Injectable()
@@ -45,48 +46,62 @@ export class PeopleService {
   async create(createPeopleDto: CreatePeopleDto): Promise<People> {
     const resources = [this.filmsRepository, this.speciesRepository, this.starshipsRepository, this.vehiclesRepository, this.planetsRepository];
 
+    const existsPeople = await this.peopleRepository.findOne({where: {name: createPeopleDto.name}});
+    if (existsPeople) throw new HttpException("Person already exists", HttpStatus.FORBIDDEN);
     let people = new People();
     
     for (let key in createPeopleDto) {
       if (key === 'images') continue; // изменяем каринки только через свои контроллеры
-      people[key] = this.propsRelations.includes(key) ? [] : createPeopleDto[key]; // зануляем только те которые передаем!
+      people[key] = this.propsRelations.includes(key) ? [] : createPeopleDto[key];
     }
-    // people.films = [];
-    // people.starships = [];
-    // people.planets = [];
-    // people.species = [];
-    // people.vehicles = [];
-    await this.peopleRepository.save(people).catch((err) => {
-      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
-    }); // обнуляем связи, что бы не было ошибки дублирования внешних ключей
     
     people.homeworld = createPeopleDto['homeworld'] ?
                         await this.planetsRepository.findOne({where :{ url:  createPeopleDto['homeworld'] }}) :
                         null;
-                        
-    for (let i = 0; i < this.propsRelations.length - 1; i++) {
-      createPeopleDto[this.propsRelations[i]]?.forEach(async (elem) => {        
-        const person = await resources[i].findOneBy({ url: elem });
-        if (person) {
-          people[this.propsRelations[i]].push(person);
-        }        
-      })
+    
+    await Promise.all(this.propsRelations.map(async (key) => {
+      if (!createPeopleDto[key]) {
+         people[key] = [];
+      } else {
+        await Promise.all(createPeopleDto[key].map(async (elem) => {        
+          const person = await resources[this.propsRelations.indexOf(key)].findOneBy({ url: elem });
+          if (person) {
+            people[key].push(person);
+          }
+        }))
+      }
+    }))
+    return this.peopleRepository.save(people).catch((err) => {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    });
+  }
+
+  async update(updatePeopleDto: UpdatePeopleDto) {
+    const resources = [this.filmsRepository, this.speciesRepository, this.starshipsRepository, this.vehiclesRepository, this.planetsRepository];
+
+    const people = await this.peopleRepository.findOneBy({name: updatePeopleDto.name});
+    if (!people) throw new HttpException("Person not found", HttpStatus.NOT_FOUND);
+    
+    for (let key in updatePeopleDto) {
+      if (key === 'images') continue; // изменяем каринки только через свои контроллеры
+      people[key] = this.propsRelations.includes(key) ? [] : updatePeopleDto[key]; // зануляем только те которые передаем!
     }
-    // for (let j = 0; j < createPeopleDto.films?.length || 0; j++) {
-    //   people.films.push(await this.filmsRepository.findOneBy({ url: createPeopleDto.films[j] }));
-    // }
-    // for (let j = 0; j < createPeopleDto.starships?.length || 0; j++) {
-    //   people.starships.push(await this.starshipsRepository.findOneBy({ url: createPeopleDto.starships[j] }));
-    // }
-    // for (let j = 0; j < createPeopleDto.planets?.length || 0; j++) {
-    //   people.planets.push(await this.planetsRepository.findOneBy({ url: createPeopleDto.planets[j] }));
-    // }
-    // for (let j = 0; j < createPeopleDto.species?.length || 0; j++) {
-    //   people.species.push(await this.speciesRepository.findOneBy({ url: createPeopleDto.species[j] }));
-    // }
-    // for (let j = 0; j < createPeopleDto.vehicles?.length || 0; j++) {
-    //   people.vehicles.push(await this.vehiclesRepository.findOneBy({ url: createPeopleDto.vehicles[j] }));
-    // }     
+    await this.peopleRepository.save(people);
+
+    people.homeworld = updatePeopleDto['homeworld'] ?
+                        await this.planetsRepository.findOne({where :{ url:  updatePeopleDto['homeworld'] }}) :
+                        null;
+                        
+    await Promise.all(this.propsRelations.map(async (key) => {
+      if (updatePeopleDto[key]) {
+        await Promise.all(updatePeopleDto[key].map(async (elem) => {        
+          const person = await resources[this.propsRelations.indexOf(key)].findOneBy({ url: elem });
+          if (person) {
+            people[key].push(person);
+          }
+        }))
+      }
+    }))
     return this.peopleRepository.save(people).catch((err) => {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     });
@@ -122,7 +137,7 @@ export class PeopleService {
     return peoplePag;
   }
 
-  findOne(name: string): Promise<CreatePeopleDto> {
+  findOne(name: string): Promise<People> {
     const url =  `http://${process.env.HOST}:${process.env.PORT}/people/${+name}/`;
     return this.peopleRepository.findOne({ 
       relations: [...this.propsRelations, 'homeworld'],
@@ -131,13 +146,7 @@ export class PeopleService {
     })
     .then(person => {
         if (person) {
-          let people: CreatePeopleDto = new CreatePeopleDto();
-          for (let key in person) {
-            people[key] = this.propsRelations.includes(key) && person[key] ? 
-                          person[key].map((elem) => elem.url) : 
-                          key !== 'homeworld'? person[key] : person[key].url;
-          }
-          return people;
+          return person;
         } else {
           throw new HttpException("Person not found", HttpStatus.NOT_FOUND);
         }        

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, Query, DefaultValuePipe, UploadedFile, UseGuards, ValidationPipe, ClassSerializerInterceptor, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseInterceptors, UploadedFiles, Query, DefaultValuePipe, UploadedFile, UseGuards, ValidationPipe, ClassSerializerInterceptor, ParseIntPipe, Put } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody, ApiQuery, ApiConsumes, ApiProperty, ApiParam, ApiExtraModels, getSchemaPath, OmitType } from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
 
@@ -13,6 +13,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles/roles.guard';
 import { Roles } from '../auth/roles/roles.decorator';
 import { Role } from '../auth/roles/role.enum';
+import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -52,6 +53,15 @@ export class VehiclesController {
   })
   findOne(@Param('name') name: string): Promise<CreateVehicleDto> {
     return this.vehiclesService.findOne(name);
+  }
+
+  @Put()
+  @Roles(Role.Admin)
+  @ApiBody({ type: UpdateVehicleDto })
+  @ApiResponse({ status: 200, schema: {$ref: getSchemaPath(Vehicles)}})
+  @ApiOperation({ summary: 'Update vehicle' })
+  async update(@Body() updateVehicleDto: UpdateVehicleDto): Promise<Vehicles> {
+    return this.vehiclesService.update(updateVehicleDto);
   }
 
   @Delete(':name')

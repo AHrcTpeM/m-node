@@ -9,6 +9,7 @@ import { Planets } from './entities/planet.entity';
 import { Films } from '../films/entities/film.entity';
 import { People } from './../people/entities/people.entity';
 import { ImagesService } from '../images/images.service';
+import { UpdatePlanetDto } from './dto/update-planet.dto';
 
 @Injectable()
 export class PlanetsService {
@@ -29,26 +30,57 @@ export class PlanetsService {
     this.propsRelations = ['films', 'residents', 'images'];
   }
 
-  async create(createplanetsDto: CreatePlanetDto): Promise<Planets> {
-    const resources = [this.filmsRepository,  this.peopleRepository];
+  async create(createPlanetDto: CreatePlanetDto): Promise<Planets> {
+    const resources = [this.peopleRepository, this.filmsRepository];
 
+    const existsPlanet = await this.planetRepository.findOne({where: {name: createPlanetDto.name}});
+    if (existsPlanet) throw new HttpException("Planet already exists", HttpStatus.FORBIDDEN);
     let planets = new Planets();
     
-    for (let key in createplanetsDto) {
+    for (let key in createPlanetDto) {
       if (key === 'images') continue; // изменяем каринки только через свои контроллеры
-      planets[key] = this.propsRelations.includes(key) ? [] : createplanetsDto[key];
+      planets[key] = this.propsRelations.includes(key) ? [] : createPlanetDto[key];
     }
-    await this.planetRepository.save(planets).catch((err) => {
+    
+    await Promise.all(this.propsRelations.map(async (key) => {
+      if (!createPlanetDto[key]) {
+         planets[key] = [];
+      } else {
+        await Promise.all(createPlanetDto[key].map(async (elem) => {        
+          const planet = await resources[this.propsRelations.indexOf(key)].findOneBy({ url: elem });
+          if (planet) {
+            planets[key].push(planet);
+          }
+        }))
+      }
+    }))
+    return this.planetRepository.save(planets).catch((err) => {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
-    }); // обнуляем связи, что бы не было ошибки дублирования внешних ключей
-    for (let i = 0; i < this.propsRelations.length - 1; i++) {
-      createplanetsDto[this.propsRelations[i]]?.forEach(async (elem) => {        
-        const person = await resources[i].findOneBy({ url: elem });
-        if (person) {
-          planets[this.propsRelations[i]].push(person);
-        }        
-      })
+    });
+  }
+
+  async update(updatePlanetsDto: UpdatePlanetDto) {
+    const resources = [this.peopleRepository, this.filmsRepository];
+
+    const planets = await this.planetRepository.findOneBy({name: updatePlanetsDto.name});
+    if (!planets) throw new HttpException("Person not found", HttpStatus.NOT_FOUND);
+    
+    for (let key in updatePlanetsDto) {
+      if (key === 'images') continue; // изменяем каринки только через свои контроллеры
+      planets[key] = this.propsRelations.includes(key) ? [] : updatePlanetsDto[key]; // зануляем только те которые передаем!
     }
+    await this.planetRepository.save(planets);
+                        
+    await Promise.all(this.propsRelations.map(async (key) => {
+      if (updatePlanetsDto[key]) {
+        await Promise.all(updatePlanetsDto[key].map(async (elem) => {        
+          const planet = await resources[this.propsRelations.indexOf(key)].findOneBy({ url: elem });
+          if (planet) {
+            planets[key].push(planet);
+          }
+        }))
+      }
+    }))
     return this.planetRepository.save(planets).catch((err) => {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     });

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, Query, DefaultValuePipe, UploadedFile, UseGuards, ValidationPipe, ClassSerializerInterceptor, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, Query, DefaultValuePipe, UploadedFile, UseGuards, ValidationPipe, ClassSerializerInterceptor, ParseIntPipe, Put } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody, ApiQuery, ApiConsumes, ApiParam, ApiExtraModels, getSchemaPath, OmitType } from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
 
@@ -13,6 +13,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles/roles.guard';
 import { Roles } from '../auth/roles/roles.decorator';
 import { Role } from '../auth/roles/role.enum';
+import { UpdateSpeciesDto } from './dto/update-species.dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -52,6 +53,15 @@ export class SpeciesController {
   })
   findOne(@Param('name') name: string): Promise<CreateSpeciesDto> {
     return this.speciesService.findOne(name);
+  }
+    
+  @Put()
+  @Roles(Role.Admin)
+  @ApiBody({ type: UpdateSpeciesDto })
+  @ApiResponse({ status: 200, schema: {$ref: getSchemaPath(Species)}})
+  @ApiOperation({ summary: 'Update species' })
+  async update(@Body() updateSpeciesDto: UpdateSpeciesDto): Promise<Species> {
+    return this.speciesService.update(updateSpeciesDto);
   }
 
   @Delete(':name')

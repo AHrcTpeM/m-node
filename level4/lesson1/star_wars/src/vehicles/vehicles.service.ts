@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { Vehicles } from './entities/vehicle.entity';
+import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 
 @Injectable()
 export class VehiclesService {
@@ -30,28 +31,58 @@ export class VehiclesService {
     this.propsRelations = ['films', 'pilots', 'images'];
   }
 
-  async create(createVehiclesDto: CreateVehicleDto): Promise<Vehicles> {
-    const resources = [this.filmsRepository,  this.peopleRepository];
+  async create(createVehicleDto: CreateVehicleDto): Promise<Vehicles> {
+    const resources = [this.filmsRepository, this.peopleRepository];
 
-    let vehicle = new Vehicles();
+    const existsVehicles = await this.vehiclesRepository.findOne({where: {name: createVehicleDto.name}});
+    if (existsVehicles) throw new HttpException("Planet already exists", HttpStatus.FORBIDDEN);
+    let vehicles = new Vehicles();
     
-    for (let key in createVehiclesDto) {
+    for (let key in createVehicleDto) {
       if (key === 'images') continue; // изменяем каринки только через свои контроллеры
-      vehicle[key] = this.propsRelations.includes(key) ? [] : createVehiclesDto[key];
+      vehicles[key] = this.propsRelations.includes(key) ? [] : createVehicleDto[key];
     }
-    await this.vehiclesRepository.save(vehicle).catch((err) => {
+    
+    await Promise.all(this.propsRelations.map(async (key) => {
+      if (!createVehicleDto[key]) {
+         vehicles[key] = [];
+      } else {
+        await Promise.all(createVehicleDto[key].map(async (elem) => {        
+          const vehicle = await resources[this.propsRelations.indexOf(key)].findOneBy({ url: elem });
+          if (vehicle) {
+            vehicles[key].push(vehicle);
+          }
+        }))
+      }
+    }))
+    return this.vehiclesRepository.save(vehicles).catch((err) => {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
-    }); // обнуляем связи, что бы не было ошибки дублирования внешних ключей
+    });
+  }
 
-    for (let i = 0; i < this.propsRelations.length - 1; i++) {
-      createVehiclesDto[this.propsRelations[i]]?.forEach(async (elem) => {        
-        const person = await resources[i].findOneBy({ url: elem });
-        if (person) {
-          vehicle[this.propsRelations[i]].push(person);
-        }        
-      })
+  async update(updateVehicleDto: UpdateVehicleDto) {
+    const resources = [this.peopleRepository, this.filmsRepository];
+
+    const vehicles = await this.vehiclesRepository.findOneBy({name: updateVehicleDto.name});
+    if (!vehicles) throw new HttpException("Person not found", HttpStatus.NOT_FOUND);
+    
+    for (let key in updateVehicleDto) {
+      if (key === 'images') continue; // изменяем каринки только через свои контроллеры
+      vehicles[key] = this.propsRelations.includes(key) ? [] : updateVehicleDto[key]; // зануляем только те которые передаем!
     }
-    return this.vehiclesRepository.save(vehicle).catch((err) => {
+    await this.vehiclesRepository.save(vehicles);
+                        
+    await Promise.all(this.propsRelations.map(async (key) => {
+      if (updateVehicleDto[key]) {
+        await Promise.all(updateVehicleDto[key].map(async (elem) => {        
+          const vihecle = await resources[this.propsRelations.indexOf(key)].findOneBy({ url: elem });
+          if (vihecle) {
+            vehicles[key].push(vihecle);
+          }
+        }))
+      }
+    }))
+    return this.vehiclesRepository.save(vehicles).catch((err) => {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     });
   }

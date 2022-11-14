@@ -9,6 +9,7 @@ import { People } from '../people/entities/people.entity';
 import { Repository } from 'typeorm';
 import { CreateStarshipDto } from './dto/create-starship.dto';
 import { Starships } from './entities/starship.entity';
+import { UpdateStarshipDto } from './dto/update-starship.dto';
 
 @Injectable()
 export class StarshipsService {
@@ -30,26 +31,56 @@ export class StarshipsService {
   }
 
   async create(createStarshipDto: CreateStarshipDto): Promise<Starships> {
-    const resources = [this.filmsRepository,  this.peopleRepository];
+    const resources = [this.filmsRepository, this.peopleRepository];
 
+    const existsStarship = await this.starshipsRepository.findOne({where: {name: createStarshipDto.name}});
+    if (existsStarship) throw new HttpException("Planet already exists", HttpStatus.FORBIDDEN);
     let starships = new Starships();
     
     for (let key in createStarshipDto) {
       if (key === 'images') continue; // изменяем каринки только через свои контроллеры
       starships[key] = this.propsRelations.includes(key) ? [] : createStarshipDto[key];
     }
-    await this.starshipsRepository.save(starships).catch((err) => {
+    
+    await Promise.all(this.propsRelations.map(async (key) => {
+      if (!createStarshipDto[key]) {
+         starships[key] = [];
+      } else {
+        await Promise.all(createStarshipDto[key].map(async (elem) => {        
+          const speciesOne = await resources[this.propsRelations.indexOf(key)].findOneBy({ url: elem });
+          if (speciesOne) {
+            starships[key].push(speciesOne);
+          }
+        }))
+      }
+    }))
+    return this.starshipsRepository.save(starships).catch((err) => {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
-    }); // обнуляем связи, что бы не было ошибки дублирования внешних ключей
+    });
+  }
 
-    for (let i = 0; i < this.propsRelations.length - 1; i++) {
-      createStarshipDto[this.propsRelations[i]]?.forEach(async (elem) => {        
-        const person = await resources[i].findOneBy({ url: elem });
-        if (person) {
-          starships[this.propsRelations[i]].push(person);
-        }        
-      })
+  async update(updateStarshipDto: UpdateStarshipDto) {
+    const resources = [this.peopleRepository, this.filmsRepository];
+
+    const starships = await this.starshipsRepository.findOneBy({name: updateStarshipDto.name});
+    if (!starships) throw new HttpException("Person not found", HttpStatus.NOT_FOUND);
+    
+    for (let key in updateStarshipDto) {
+      if (key === 'images') continue; // изменяем каринки только через свои контроллеры
+      starships[key] = this.propsRelations.includes(key) ? [] : updateStarshipDto[key]; // зануляем только те которые передаем!
     }
+    await this.starshipsRepository.save(starships);
+                        
+    await Promise.all(this.propsRelations.map(async (key) => {
+      if (updateStarshipDto[key]) {
+        await Promise.all(updateStarshipDto[key].map(async (elem) => {        
+          const starship = await resources[this.propsRelations.indexOf(key)].findOneBy({ url: elem });
+          if (starship) {
+            starships[key].push(starship);
+          }
+        }))
+      }
+    }))
     return this.starshipsRepository.save(starships).catch((err) => {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     });

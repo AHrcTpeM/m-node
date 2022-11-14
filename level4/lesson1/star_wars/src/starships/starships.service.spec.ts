@@ -71,14 +71,17 @@ describe('StarshipsService', () => {
     dto.name = 'Abu';
     const starships = new Starships();
     starships.name = 'Moon';
+    const starshipRepositoryFindOneSpy = jest
+        .spyOn(starshipRepositorySpy, 'findOne')
+        .mockReturnValue(null);
     const starshipRepositorySaveSpy = jest
         .spyOn(starshipRepositorySpy, 'save')
         .mockReturnValue(Promise.resolve(starships));
         
     expect(await service.create(dto)).toEqual(starships);
     expect(createSpy).toHaveBeenCalledWith(dto);
-    expect(starshipRepositorySaveSpy).toHaveBeenCalledTimes(2);
-    expect(starshipRepositorySaveSpy).toHaveBeenCalledWith(dto);
+    expect(starshipRepositoryFindOneSpy).toHaveBeenCalled();
+    expect(starshipRepositorySaveSpy).toHaveBeenCalled();
   });
 
   it('should call findOne method with expected param', async () => {

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, DefaultValuePipe, UploadedFile, Query, UseGuards, ValidationPipe, ClassSerializerInterceptor, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseInterceptors, UploadedFiles, DefaultValuePipe, UploadedFile, Query, UseGuards, ValidationPipe, ClassSerializerInterceptor, ParseIntPipe, Put } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody, ApiQuery, ApiConsumes, ApiProperty, ApiParam, ApiExtraModels, getSchemaPath, OmitType } from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { FilmsService } from './films.service';
@@ -12,6 +12,7 @@ import { Roles } from '../auth/roles/roles.decorator';
 import { Role } from '../auth/roles/role.enum';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles/roles.guard';
+import { UpdateFilmDto } from './dto/update-film.dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -51,6 +52,15 @@ export class FilmsController {
   })
   findOne(@Param('title') title: string): Promise<CreateFilmDto> {
     return this.filmsService.findOne(title);
+  }
+    
+  @Put()
+  @Roles(Role.Admin)
+  @ApiBody({ type: UpdateFilmDto })
+  @ApiResponse({ status: 200, schema: {$ref: getSchemaPath(Films)}})
+  @ApiOperation({ summary: 'Update film' })
+  async update(@Body() updatefilmsDto: UpdateFilmDto): Promise<Films> {
+    return this.filmsService.update(updatefilmsDto);
   }
 
   @Delete(':title')

@@ -73,14 +73,17 @@ describe('SpeciesService', () => {
     dto.name = 'Abu';
     const species = new Species();
     species.name = 'Moon';
+    const speciesRepositoryFindOneSpy = jest
+      .spyOn(speciesRepositorySpy, 'findOne')
+      .mockReturnValue(null);
     const speciesRepositorySaveSpy = jest
         .spyOn(speciesRepositorySpy, 'save')
         .mockReturnValue(Promise.resolve(species));
         
     expect(await service.create(dto)).toEqual(species);
     expect(createSpy).toHaveBeenCalledWith(dto);
-    expect(speciesRepositorySaveSpy).toHaveBeenCalledTimes(2);
-    expect(speciesRepositorySaveSpy).toHaveBeenCalledWith(dto);
+    expect(speciesRepositoryFindOneSpy).toHaveBeenCalled();
+    expect(speciesRepositorySaveSpy).toHaveBeenCalled();
   });
 
   it('should call findOne method with expected param', async () => {

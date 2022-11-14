@@ -87,14 +87,17 @@ describe('PeopleService', () => {
     dto.name = 'Abu';
     const people = new People();
     people.name = 'Moon';
+    const peopleRepositoryFindOneSpy = jest
+        .spyOn(peopleRepositorySpy, 'findOne')
+        .mockReturnValue(null);
     const peopleRepositorySaveSpy = jest
         .spyOn(peopleRepositorySpy, 'save')
         .mockReturnValue(Promise.resolve(people));
         
     expect(await service.create(dto)).toEqual(people);
     expect(createSpy).toHaveBeenCalledWith(dto);
-    expect(peopleRepositorySaveSpy).toHaveBeenCalledTimes(2);
-    expect(peopleRepositorySaveSpy).toHaveBeenCalledWith({...dto, "homeworld": null});
+    expect(peopleRepositoryFindOneSpy).toHaveBeenCalled();
+    expect(peopleRepositorySaveSpy).toHaveBeenCalled();
   });
 
   it('should call findOne method with expected param', async () => {

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, Query, UploadedFile, DefaultValuePipe, UseGuards, ValidationPipe, ClassSerializerInterceptor, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, Query, UploadedFile, DefaultValuePipe, UseGuards, ValidationPipe, ClassSerializerInterceptor, ParseIntPipe, Put } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody, ApiQuery, ApiConsumes, ApiProperty, ApiParam, ApiExtraModels, getSchemaPath, OmitType } from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
 
@@ -13,6 +13,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles/roles.guard';
 import { Roles } from '../auth/roles/roles.decorator';
 import { Role } from '../auth/roles/role.enum';
+import { UpdateStarshipDto } from './dto/update-starship.dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -52,6 +53,15 @@ export class StarshipsController {
   })
   findOne(@Param('name') name: string): Promise<CreateStarshipDto> {
     return this.starshipsService.findOne(name);
+  }
+
+  @Put()
+  @Roles(Role.Admin)
+  @ApiBody({ type: UpdateStarshipDto })
+  @ApiResponse({ status: 200, schema: {$ref: getSchemaPath(Starships)}})
+  @ApiOperation({ summary: 'Update starship' })
+  async update(@Body() updateStarshipDto: UpdateStarshipDto): Promise<Starships> {
+    return this.starshipsService.update(updateStarshipDto);
   }
 
   @Delete(':name')
