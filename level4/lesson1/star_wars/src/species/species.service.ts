@@ -34,7 +34,7 @@ export class SpeciesService {
     const resources = [this.filmsRepository, this.peopleRepository];
 
     const existsSpecies = await this.speciesRepository.findOne({where: {name: createSpeciesDto.name}});
-    if (existsSpecies) throw new HttpException("Planet already exists", HttpStatus.FORBIDDEN);
+    if (existsSpecies) throw new HttpException("Species already exists", HttpStatus.FORBIDDEN);
     let species = new Species();
     
     for (let key in createSpeciesDto) {

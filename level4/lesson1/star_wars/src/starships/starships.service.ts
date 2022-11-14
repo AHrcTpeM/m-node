@@ -34,7 +34,7 @@ export class StarshipsService {
     const resources = [this.filmsRepository, this.peopleRepository];
 
     const existsStarship = await this.starshipsRepository.findOne({where: {name: createStarshipDto.name}});
-    if (existsStarship) throw new HttpException("Planet already exists", HttpStatus.FORBIDDEN);
+    if (existsStarship) throw new HttpException("Starship already exists", HttpStatus.FORBIDDEN);
     let starships = new Starships();
     
     for (let key in createStarshipDto) {

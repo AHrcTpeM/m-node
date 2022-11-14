@@ -35,7 +35,7 @@ export class VehiclesService {
     const resources = [this.filmsRepository, this.peopleRepository];
 
     const existsVehicles = await this.vehiclesRepository.findOne({where: {name: createVehicleDto.name}});
-    if (existsVehicles) throw new HttpException("Planet already exists", HttpStatus.FORBIDDEN);
+    if (existsVehicles) throw new HttpException("Vihecle already exists", HttpStatus.FORBIDDEN);
     let vehicles = new Vehicles();
     
     for (let key in createVehicleDto) {
