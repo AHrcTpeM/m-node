@@ -20,7 +20,7 @@ async function bootstrap() {
   const env = config.get<string>('env');
 
   app.enableCors();
-  app.use(morgan('combined'));  // вывод логов поситителей
+  app.use(morgan('combined'));  // вывод логов посетителей
   app.useStaticAssets(join(__dirname, '..', '..', 'files'));
 
   const aws = config.get('aws');

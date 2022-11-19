@@ -87,10 +87,10 @@ export class PeopleService {
       people[key] = this.propsRelations.includes(key) ? [] : updatePeopleDto[key]; // зануляем только те которые передаем!
     }
     await this.peopleRepository.save(people);
-
-    people.homeworld = updatePeopleDto['homeworld'] ?
-                        await this.planetsRepository.findOne({where :{ url:  updatePeopleDto['homeworld'] }}) :
-                        null;
+    
+    if (updatePeopleDto['homeworld']) {
+      people.homeworld = await this.planetsRepository.findOne({where :{ url:  updatePeopleDto['homeworld'] }});
+    }
                         
     await Promise.all(this.propsRelations.map(async (key) => {
       if (updatePeopleDto[key]) {
