@@ -23,7 +23,7 @@ export class PeopleController {
   
     @Post()
     @ApiBody({ type: CreatePeopleDto })
-    @ApiOperation({ summary: 'Create people or update person by name' })
+    @ApiOperation({ summary: 'Create people' })
     @ApiResponse({ status: 201, description: 'OK', schema: {$ref: getSchemaPath(People)}})
     async create(@Body(new ValidationPipe()) createUserDto: CreatePeopleDto): Promise<People> {
       return this.peopleService.create(createUserDto);      
@@ -43,7 +43,7 @@ export class PeopleController {
   
     @Get(':name')
     @ApiParam({ name: "name", example: "Luke Skywalker", description: 'The name of this person' })
-    @ApiOperation({ summary: 'Find one' })
+    @ApiOperation({ summary: 'Find one by name' })
     @ApiResponse({
       status: 200,
       description: 'The found record',
@@ -62,7 +62,7 @@ export class PeopleController {
     }
     
     @Delete(':name')
-    @ApiOperation({ summary: 'Remove one people' })
+    @ApiOperation({ summary: 'Remove one people by name' })
     @ApiParam({ name: "name", example: "Luke Skywalker", description: 'The name of this person' }) 
     remove(@Param('name') name: string): Promise<{ name: string; deleted: string; }> {
       return this.peopleService.remove(name);

@@ -27,7 +27,7 @@ export class PlanetsController {
   @Post()
   @Roles(Role.Admin)
   @ApiBody({ type: CreatePlanetDto })
-  @ApiOperation({ summary: 'Create planet or update person by name' })
+  @ApiOperation({ summary: 'Create planet' })
   @ApiResponse({ status: 201, description: 'OK', schema: {$ref: getSchemaPath(Planets)}})
   create(@Body(new ValidationPipe()) createPlanetDto: CreatePlanetDto): Promise<Planets> {
     return this.planetsService.create(createPlanetDto);
@@ -45,7 +45,7 @@ export class PlanetsController {
   
   @Get(':name')
   @ApiParam({ name: "name", example: "Alderaan", description: 'The name of this planet' })
-  @ApiOperation({ summary: 'Find one' })
+  @ApiOperation({ summary: 'Find one by name' })
   @ApiResponse({
     status: 200,
     description: 'The found record',
@@ -67,7 +67,7 @@ export class PlanetsController {
 
   @Delete(':name')
   @Roles(Role.Admin)
-  @ApiOperation({ summary: 'Remove one planet' })
+  @ApiOperation({ summary: 'Remove one planet by name' })
   @ApiParam({ name: "name", example: "Alderaan", description: 'The name of this planet' })    
   remove(@Param('name') name: string): Promise<{ name: string; deleted: string; }> {
     return this.planetsService.remove(name);
@@ -90,7 +90,7 @@ export class PlanetsController {
   }
 
   @Delete('file/delete/:name')
-  @ApiOperation({ summary: 'Deleting a image of the selected person by name' })
+  @ApiOperation({ summary: 'Deleting a image of the selected planet by name' })
   @ApiParam({ name: "name", example: "Alderaan", description: 'The name of this planet' })    
   @ApiQuery({
     name: 'image',

@@ -27,7 +27,7 @@ export class VehiclesController {
   @Post()
   @Roles(Role.Admin)
   @ApiBody({ type: CreateVehicleDto })
-  @ApiOperation({ summary: 'Create vehicle or update person by name' })
+  @ApiOperation({ summary: 'Create vehicle' })
   @ApiResponse({ status: 201, description: 'OK', schema: {$ref: getSchemaPath(Vehicles)}})
   create(@Body(new ValidationPipe()) createVehiclesDto: CreateVehicleDto): Promise<Vehicles> {
     return this.vehiclesService.create(createVehiclesDto);
@@ -45,7 +45,7 @@ export class VehiclesController {
 
   @Get(':name')
   @ApiParam({ name: "name", example: "Armored Assault Tank", description: 'The name of this vehicle' })
-  @ApiOperation({ summary: 'Find one' })
+  @ApiOperation({ summary: 'Find one by name' })
   @ApiResponse({
     status: 200,
     description: 'The found record',
@@ -66,7 +66,7 @@ export class VehiclesController {
 
   @Delete(':name')
   @Roles(Role.Admin)
-  @ApiOperation({ summary: 'Remove one vehicle' })
+  @ApiOperation({ summary: 'Remove one vehicle by name' })
   @ApiParam({ name: "name", example: "Armored Assault Tank", description: 'The name of this vehicle' })
   remove(@Param('name') name: string): Promise<{ name: string; deleted: string; }> {
     return this.vehiclesService.remove(name);

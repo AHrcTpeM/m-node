@@ -27,7 +27,7 @@ export class SpeciesController {
   @Post()
   @Roles(Role.Admin)
   @ApiBody({ type: CreateSpeciesDto })
-  @ApiOperation({ summary: 'Create species or update person by name' })
+  @ApiOperation({ summary: 'Create species' })
   @ApiResponse({ status: 201, description: 'OK', schema: {$ref: getSchemaPath(Species)}})
   create(@Body(new ValidationPipe()) createSpeciesDto: CreateSpeciesDto): Promise<Species> {
     return this.speciesService.create(createSpeciesDto);
@@ -45,7 +45,7 @@ export class SpeciesController {
 
   @Get(':name')
   @ApiParam({ name: "name", example: "Aleena", description: 'The name of this species' })
-  @ApiOperation({ summary: 'Find one' })
+  @ApiOperation({ summary: 'Find one by name' })
   @ApiResponse({
     status: 200,
     description: 'The found record',
@@ -66,12 +66,11 @@ export class SpeciesController {
 
   @Delete(':name')
   @Roles(Role.Admin)
-  @ApiOperation({ summary: 'Remove one species' })
+  @ApiOperation({ summary: 'Remove one species by name' })
   @ApiParam({ name: "name", example: "Aleena", description: 'The name of this species' })    
   remove(@Param('name') name: string): Promise<{ name: string; deleted: string; }> {
     return this.speciesService.remove(name);
   }
-
 
   @Post('file/upload')
   @ApiOperation({ summary: 'File upload in local storage' })

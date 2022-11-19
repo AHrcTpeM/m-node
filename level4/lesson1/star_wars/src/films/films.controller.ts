@@ -26,7 +26,7 @@ export class FilmsController {
   @Post()
   @Roles(Role.Admin)
   @ApiBody({ type: CreateFilmDto })
-  @ApiOperation({ summary: 'Create film or update person by name' })
+  @ApiOperation({ summary: 'Create film' })
   @ApiResponse({ status: 201, description: 'OK', schema: {$ref: getSchemaPath(Films)}})
   create(@Body(new ValidationPipe()) createFilmDto: CreateFilmDto): Promise<Films> {
     return this.filmsService.create(createFilmDto);
@@ -44,7 +44,7 @@ export class FilmsController {
 
   @Get(':title')
   @ApiParam({ name: "title", example: "A New Hope", description: 'The name of this film' })
-  @ApiOperation({ summary: 'Find one' })
+  @ApiOperation({ summary: 'Find one by title' })
   @ApiResponse({
     status: 200,
     description: 'The found record',
@@ -65,7 +65,7 @@ export class FilmsController {
 
   @Delete(':title')
   @Roles(Role.Admin)
-  @ApiOperation({ summary: 'Remove one film' })
+  @ApiOperation({ summary: 'Remove one film by title' })
   @ApiParam({ name: "title", example: "A New Hope", description: 'The name of this film' })    
   remove(@Param('title') title: string): Promise<{ name: string; deleted: string; }> {
     return this.filmsService.remove(title);
@@ -88,7 +88,7 @@ export class FilmsController {
   }
 
   @Delete('file/delete/:name')
-  @ApiOperation({ summary: 'Deleting a image of the selected person by name' })
+  @ApiOperation({ summary: 'Deleting a image of the selected film by title' })
   @ApiParam({ name: "name", example: "A New Hope", description: 'The title of this films' })    
   @ApiQuery({
     name: 'image',

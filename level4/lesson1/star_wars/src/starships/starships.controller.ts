@@ -27,7 +27,7 @@ export class StarshipsController {
   @Post()
   @Roles(Role.Admin)
   @ApiBody({ type: CreateStarshipDto })
-  @ApiOperation({ summary: 'Create starship or update person by name' })
+  @ApiOperation({ summary: 'Create starship' })
   @ApiResponse({ status: 201, description: 'OK', schema: {$ref: getSchemaPath(Starships)}})
   create(@Body(new ValidationPipe()) createStarshipDto: CreateStarshipDto): Promise<Starships> {
     return this.starshipsService.create(createStarshipDto);
@@ -45,7 +45,7 @@ export class StarshipsController {
 
   @Get(':name')
   @ApiParam({ name: "name", example: "A-wing", description: 'The name of this starship' })
-  @ApiOperation({ summary: 'Find one' })
+  @ApiOperation({ summary: 'Find one by name' })
   @ApiResponse({
     status: 200,
     description: 'The found record',
@@ -66,7 +66,7 @@ export class StarshipsController {
 
   @Delete(':name')
   @Roles(Role.Admin)
-  @ApiOperation({ summary: 'Remove one starship' })
+  @ApiOperation({ summary: 'Remove one starship by name' })
   @ApiParam({ name: "name", example: "A-wing", description: 'The name of this starship' })    
   remove(@Param('name') name: string): Promise<{ name: string; deleted: string; }> {
     return this.starshipsService.remove(name);
