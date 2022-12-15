@@ -1,6 +1,6 @@
 База данных mysql
 
-npm install -force  
+npm install --force  
 npm run migration:run && npm run seed:run  
 или  
 npm run seed:my - синхронизация включена, поэтому сразу создадуться таблицы в базе данных и начнут заполнятся данными из swapi.  
