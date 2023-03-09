@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 
 let db: {          
           users: {
@@ -29,10 +30,12 @@ let db: {
             }
 
 try {
-  db = JSON.parse(fs.readFileSync("public/text.txt", "utf8"));
+  // db = JSON.parse(fs.readFileSync("public/text.txt", "utf8"));
+  db = JSON.parse(fs.readFileSync(path.join(__dirname, '../../public/text.txt'), "utf8"));
 } 
 catch(err) {
-  fs.writeFileSync("public/text.txt", `${JSON.stringify(db)}`);
+  // fs.writeFileSync("public/text.txt", `${JSON.stringify(db)}`);
+  fs.writeFileSync(path.join(__dirname, '../../public/text.txt'), `${JSON.stringify(db)}`);
 }
 
 export default db;
